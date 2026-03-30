@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
 
 interface HeaderProps {
-  onNavigate: (view: 'home' | 'episodes') => void;
+  onNavigate: (view: 'home' | 'episodes' | 'doctors') => void;
 }
 
 const Header: React.FC<HeaderProps> = ({ onNavigate }) => {
@@ -17,13 +17,16 @@ const Header: React.FC<HeaderProps> = ({ onNavigate }) => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const handleNavClick = (view: 'home' | 'episodes', href: string) => {
+  const handleNavClick = (view: 'home' | 'episodes' | 'doctors', href: string) => {
     setMobileMenuOpen(false);
 
-    // If navigating to home section
+    if (view === 'doctors') {
+      onNavigate('doctors');
+      return;
+    }
+
     if (view === 'home') {
       onNavigate('home');
-      // If it's a hash link, we need to wait for render then scroll
       if (href.startsWith('#')) {
         setTimeout(() => {
           const element = document.querySelector(href);
@@ -42,8 +45,9 @@ const Header: React.FC<HeaderProps> = ({ onNavigate }) => {
 
   const navLinks = [
     { name: 'O Prowadzącej', href: '#about', view: 'home' as const },
-    { name: 'Odcinki', href: '#episodes', view: 'episodes' as const }, // Links to Episodes Page
+    { name: 'Odcinki', href: '#episodes', view: 'episodes' as const },
     { name: 'Posłuchaj', href: '#listen', view: 'home' as const },
+    { name: 'For Doctors', href: '#', view: 'doctors' as const },
   ];
 
   return (
