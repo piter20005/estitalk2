@@ -2,7 +2,7 @@ import React from 'react';
 import { Instagram, Facebook, Mail } from 'lucide-react';
 
 interface FooterProps {
-  onNavigate: (view: 'home' | 'episodes') => void;
+  onNavigate: (view: 'home' | 'episodes' | 'doctors') => void;
 }
 
 const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
