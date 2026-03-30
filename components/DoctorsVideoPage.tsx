@@ -1,11 +1,12 @@
 import React, { useEffect } from 'react';
-import { ArrowLeft, ArrowRight, ShoppingBag } from 'lucide-react';
+import { ArrowLeft, ArrowRight, ShoppingBag, Lock, CheckCircle } from 'lucide-react';
 
 interface DoctorsVideoPageProps {
   onBack: () => void;
+  isUnlocked: boolean;
 }
 
-const DoctorsVideoPage: React.FC<DoctorsVideoPageProps> = ({ onBack }) => {
+const DoctorsVideoPage: React.FC<DoctorsVideoPageProps> = ({ onBack, isUnlocked }) => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -35,45 +36,71 @@ const DoctorsVideoPage: React.FC<DoctorsVideoPageProps> = ({ onBack }) => {
           </h1>
         </div>
 
-        {/* Vimeo Video Embed */}
+        {/* Video area */}
         <div className="mb-10 shadow-xl rounded-sm overflow-hidden">
-          <div className="relative aspect-video w-full bg-black">
-            <iframe
-              src="https://player.vimeo.com/video/1178495881?h=24fbc7bee8&title=0&byline=0&portrait=0&badge=0&autopause=0&player_id=0&app_id=58479"
-              className="absolute inset-0 w-full h-full"
-              frameBorder="0"
-              allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media"
-              allowFullScreen
-              title="EstiTalk for Doctors"
-            />
-          </div>
+          {isUnlocked ? (
+            /* Unlocked: full Vimeo embed */
+            <div className="relative aspect-video w-full bg-black">
+              <iframe
+                src="https://player.vimeo.com/video/1178495881?h=24fbc7bee8&title=0&byline=0&portrait=0&badge=0&autopause=0&player_id=0&app_id=58479"
+                className="absolute inset-0 w-full h-full"
+                frameBorder="0"
+                allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media"
+                allowFullScreen
+                title="EstiTalk for Doctors"
+              />
+            </div>
+          ) : (
+            /* Locked: placeholder with lock icon */
+            <div className="relative aspect-video w-full bg-zinc-900 flex flex-col items-center justify-center gap-4">
+              <div className="w-16 h-16 rounded-full bg-white/10 flex items-center justify-center">
+                <Lock size={28} className="text-esti-gold" />
+              </div>
+              <p className="text-white/60 text-sm font-sans tracking-wide">
+                Kup dostęp, aby obejrzeć film
+              </p>
+            </div>
+          )}
         </div>
 
-        {/* Purchase CTA */}
-        <div className="bg-zinc-900 text-white rounded-sm p-10 text-center relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-esti-gold/10 rounded-full blur-[80px] pointer-events-none" />
-          <div className="relative z-10">
-            <ShoppingBag size={28} className="text-esti-gold mx-auto mb-4" />
-            <h2 className="font-serif text-3xl md:text-4xl mb-3">
-              Kup dostęp do filmu
+        {isUnlocked ? (
+          /* Success state */
+          <div className="bg-white border border-gray-100 shadow-sm rounded-sm p-8 text-center">
+            <CheckCircle size={36} className="text-green-500 mx-auto mb-4" />
+            <h2 className="font-serif text-2xl text-esti-dark mb-2">
+              Dziękujemy za zakup!
             </h2>
-            <p className="text-gray-400 mb-8 max-w-md mx-auto text-sm leading-relaxed">
-              Jednorazowa płatność — dostęp do pełnej wersji bez limitu czasu.
-            </p>
-            <a
-              href="https://buy.stripe.com/eVq7sK55mbDG9IFczFgMw02"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group inline-flex items-center gap-3 bg-esti-gold text-esti-dark px-10 py-4 rounded-sm font-bold uppercase tracking-widest hover:bg-white transition-all duration-300"
-            >
-              <span>Kup teraz</span>
-              <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
-            </a>
-            <p className="mt-6 text-xs text-gray-500">
-              Płatność bezpieczna przez Stripe.
+            <p className="text-esti-taupe text-sm">
+              Możesz teraz odtworzyć film powyżej.
             </p>
           </div>
-        </div>
+        ) : (
+          /* Purchase CTA */
+          <div className="bg-zinc-900 text-white rounded-sm p-10 text-center relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-esti-gold/10 rounded-full blur-[80px] pointer-events-none" />
+            <div className="relative z-10">
+              <ShoppingBag size={28} className="text-esti-gold mx-auto mb-4" />
+              <h2 className="font-serif text-3xl md:text-4xl mb-3">
+                Kup dostęp do filmu
+              </h2>
+              <p className="text-gray-400 mb-8 max-w-md mx-auto text-sm leading-relaxed">
+                Jednorazowa płatność — dostęp do pełnej wersji bez limitu czasu.
+              </p>
+              <a
+                href="https://buy.stripe.com/eVq7sK55mbDG9IFczFgMw02"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group inline-flex items-center gap-3 bg-esti-gold text-esti-dark px-10 py-4 rounded-sm font-bold uppercase tracking-widest hover:bg-white transition-all duration-300"
+              >
+                <span>Kup teraz</span>
+                <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+              </a>
+              <p className="mt-6 text-xs text-gray-500">
+                Płatność bezpieczna przez Stripe.
+              </p>
+            </div>
+          </div>
+        )}
 
       </div>
     </div>

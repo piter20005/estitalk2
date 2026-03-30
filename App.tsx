@@ -13,9 +13,22 @@ import DoctorsVideoPage from './components/DoctorsVideoPage';
 import Footer from './components/Footer';
 import { Episode } from './types';
 
+const ACCESS_TOKEN = 'estidoctors2025film';
+
 const App: React.FC = () => {
   const [currentView, setCurrentView] = useState<'home' | 'episodes' | 'episode' | 'doctors'>('home');
   const [selectedEpisode, setSelectedEpisode] = useState<Episode | null>(null);
+  const [doctorsUnlocked, setDoctorsUnlocked] = useState(false);
+
+  // Check for payment success token in URL on mount
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('dkey') === ACCESS_TOKEN) {
+      setDoctorsUnlocked(true);
+      setCurrentView('doctors');
+      window.history.replaceState({}, '', '/');
+    }
+  }, []);
 
   // Restore smooth scroll behavior for anchor links
   useEffect(() => {
@@ -111,7 +124,10 @@ const App: React.FC = () => {
         )}
 
         {currentView === 'doctors' && (
-          <DoctorsVideoPage onBack={() => handleNavigate('home')} />
+          <DoctorsVideoPage
+            onBack={() => handleNavigate('home')}
+            isUnlocked={doctorsUnlocked}
+          />
         )}
       </main>
 
