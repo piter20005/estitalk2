@@ -20,19 +20,22 @@ const App: React.FC = () => {
   const [selectedEpisode, setSelectedEpisode] = useState<Episode | null>(null);
   const [doctorsUnlocked, setDoctorsUnlocked] = useState(false);
 
-  // Check for payment success token in URL on mount
+  // On mount: check for payment token OR hash-based routing
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.get('dkey') === ACCESS_TOKEN) {
       setDoctorsUnlocked(true);
       setCurrentView('doctors');
-      window.history.replaceState({}, '', '/');
+      window.history.replaceState({}, '', '/#doctors');
+      return;
+    }
+    if (window.location.hash === '#doctors') {
+      setCurrentView('doctors');
     }
   }, []);
 
   // Restore smooth scroll behavior for anchor links
   useEffect(() => {
-    // We only attach this when in home view
     if (currentView === 'home') {
       const handleAnchorClick = (e: MouseEvent) => {
         const target = e.target as HTMLElement;
@@ -43,15 +46,11 @@ const App: React.FC = () => {
           if (targetId && targetId !== '#') {
             const targetElement = document.querySelector(targetId);
             if (targetElement) {
-              targetElement.scrollIntoView({
-                behavior: 'smooth'
-              });
+              targetElement.scrollIntoView({ behavior: 'smooth' });
             }
           }
         }
       };
-
-      // Simple delegated event listener logic
       document.addEventListener('click', handleAnchorClick);
       return () => document.removeEventListener('click', handleAnchorClick);
     }
@@ -61,6 +60,11 @@ const App: React.FC = () => {
     setCurrentView(view);
     setSelectedEpisode(null);
     window.scrollTo(0, 0);
+    if (view === 'doctors') {
+      window.history.pushState({}, '', '/#doctors');
+    } else {
+      window.history.pushState({}, '', '/');
+    }
   };
 
   const handleEpisodeClick = (episode: Episode) => {
@@ -71,7 +75,6 @@ const App: React.FC = () => {
 
   return (
     <div className="font-sans text-esti-dark bg-white selection:bg-esti-beige selection:text-esti-dark">
-      {/* Hide header on episode page to be cleaner, or keep it? Keeping it for navigation is better */}
       <Header onNavigate={handleNavigate} />
 
       <main>
