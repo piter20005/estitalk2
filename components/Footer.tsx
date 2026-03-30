@@ -56,8 +56,6 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
               <h4 className="font-sans text-xs font-bold uppercase tracking-widest text-esti-beige mb-6">Kontakt</h4>
               <ul className="space-y-4 font-light text-sm opacity-80">
                 <li><a href="mailto:kontakt@estitalk.pl" className="hover:text-white transition-colors">kontakt@estitalk.pl</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Dla mediów</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Współpraca</a></li>
               </ul>
             </div>
           </div>

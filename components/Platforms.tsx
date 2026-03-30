@@ -7,23 +7,20 @@ const Platforms: React.FC = () => {
       name: 'Spotify',
       url: 'https://open.spotify.com/show/4AV3JfVxwT8KfqeVHUYoU0',
       icon: <Music size={32} />,
-      color: 'hover:bg-[#1DB954] hover:text-white',
-      desc: 'Słuchaj w drodze'
+      desc: 'Słuchaj w drodze',
     },
     {
       name: 'Apple Podcasts',
       url: 'https://podcasts.apple.com/pl/podcast/estitalk-rozmowy-o-pi%C4%99knie-z-dr-tatian%C4%85-jasi%C5%84sk%C4%85/id1757956398?l=pl',
       icon: <Podcast size={32} />,
-      color: 'hover:bg-[#872EC4] hover:text-white',
-      desc: 'Idealne na iOS'
+      desc: 'Idealne na iOS',
     },
     {
       name: 'YouTube',
       url: 'https://www.youtube.com/playlist?list=PLs36Pjn2gU5a9qx-5F8HgyqujnfOlC4Pt',
       icon: <Youtube size={32} />,
-      color: 'hover:bg-[#FF0000] hover:text-white',
-      desc: 'Oglądaj wideo'
-    }
+      desc: 'Oglądaj wideo',
+    },
   ];
 
   return (
@@ -32,10 +29,12 @@ const Platforms: React.FC = () => {
       <div className="absolute inset-0 z-0">
         <img
           src="/images/iphone spotify mockup.png"
-          alt="Background"
+          alt=""
+          aria-hidden="true"
           className="w-full h-full object-cover"
+          loading="lazy"
         />
-        <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px]"></div>
+        <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px]" />
       </div>
 
       <div className="container mx-auto px-6 relative z-10">
@@ -56,7 +55,7 @@ const Platforms: React.FC = () => {
               href={platform.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="group relative bg-white/10 backdrop-blur-md border border-white/20 p-8 h-64 flex flex-col justify-between transition-all duration-300 hover:bg-white/20 hover:border-white/40 hover:shadow-2xl hover:-translate-y-1"
+              className="group relative bg-white/10 backdrop-blur-md border border-white/20 p-8 min-h-[200px] flex flex-col justify-between transition-all duration-300 hover:bg-white/20 hover:border-white/40 hover:shadow-2xl hover:-translate-y-1"
             >
               <div className="flex justify-between items-start">
                 <span className="text-white group-hover:scale-110 transition-transform duration-300">

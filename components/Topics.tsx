@@ -35,29 +35,29 @@ const Topics: React.FC = () => {
           <h2 className="font-serif text-4xl md:text-5xl text-esti-dark mb-6">
             O czym rozmawiamy?
           </h2>
-          <p className="text-gray-600 font-light text-lg">
-            Esti Talk to holistyczne spojrzenie na człowieka. 
+          <p className="text-esti-taupe font-light text-lg">
+            Esti Talk to holistyczne spojrzenie na człowieka.
             Łączymy twardą wiedzę medyczną z delikatnością dbania o siebie.
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {topics.map((topic, index) => (
-            <div 
+            <div
               key={index}
               className="group p-8 border border-gray-100 bg-esti-light/30 hover:bg-white hover:shadow-xl transition-all duration-500 rounded-sm relative overflow-hidden"
             >
-              <div className="absolute top-0 left-0 w-1 h-0 bg-esti-gold group-hover:h-full transition-all duration-500"></div>
-              
+              <div className="absolute top-0 left-0 w-1 h-0 bg-esti-gold group-hover:h-full transition-all duration-500" />
+
               <div className="mb-6 text-esti-taupe group-hover:text-esti-dark transition-colors transform group-hover:scale-110 duration-500 origin-left">
                 {topic.icon}
               </div>
-              
+
               <h3 className="font-serif text-xl text-esti-dark mb-4 group-hover:translate-x-2 transition-transform duration-300">
                 {topic.title}
               </h3>
-              
-              <p className="font-sans font-light text-sm text-gray-600 leading-relaxed opacity-80 group-hover:opacity-100 transition-opacity">
+
+              <p className="font-sans font-light text-sm text-esti-taupe leading-relaxed opacity-80 group-hover:opacity-100 transition-opacity">
                 {topic.desc}
               </p>
             </div>
