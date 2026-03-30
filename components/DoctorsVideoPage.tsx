@@ -150,7 +150,7 @@ const DoctorsVideoPage: React.FC<DoctorsVideoPageProps> = ({ onBack, isUnlocked 
                       Jednorazowa płatność. Dostęp do pełnej wersji bez limitu czasu.
                     </p>
                     <a
-                      href="https://buy.stripe.com/eVq7sK55mbDG9IFczFgMw02"
+                      href="https://buy.stripe.com/5kQeVe2st1h00ou3qU6AM00"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="group flex items-center justify-center gap-3 w-full bg-esti-gold text-esti-dark py-4 rounded-sm font-bold uppercase tracking-widest hover:bg-white transition-all duration-300 mb-4"
