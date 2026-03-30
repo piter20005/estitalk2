@@ -1,7 +1,11 @@
 import React from 'react';
-import { Check, ArrowRight } from 'lucide-react';
+import { Check, ArrowRight, Play } from 'lucide-react';
 
-const DoctorsSubscription: React.FC = () => {
+interface DoctorsSubscriptionProps {
+  onViewPage: () => void;
+}
+
+const DoctorsSubscription: React.FC<DoctorsSubscriptionProps> = ({ onViewPage }) => {
     const benefits = [
         "Early Access do pełnych wywiadów z topowymi ekspertami",
         "„Clinical Notes” – 5 klinicznych wniosków z każdego odcinka",
@@ -53,11 +57,18 @@ const DoctorsSubscription: React.FC = () => {
                                 href="https://buy.stripe.com/eVq7sK55mbDG9IFczFgMw02"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="group flex items-center justify-center gap-3 w-full bg-esti-gold text-esti-dark py-4 rounded-sm font-bold uppercase tracking-widest hover:bg-white transition-all duration-300"
+                                className="group flex items-center justify-center gap-3 w-full bg-esti-gold text-esti-dark py-4 rounded-sm font-bold uppercase tracking-widest hover:bg-white transition-all duration-300 mb-3"
                             >
                                 <span>Dołącz teraz</span>
                                 <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
                             </a>
+                            <button
+                                onClick={onViewPage}
+                                className="group flex items-center justify-center gap-3 w-full bg-transparent text-white border border-white/20 py-4 rounded-sm font-bold uppercase tracking-widest hover:bg-white/10 transition-all duration-300"
+                            >
+                                <Play size={16} className="text-esti-gold" fill="currentColor" />
+                                <span>Zobacz film</span>
+                            </button>
                         </div>
                     </div>
 
