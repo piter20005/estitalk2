@@ -9,7 +9,6 @@ import AllEpisodes from './components/AllEpisodes';
 import EpisodePage from './components/EpisodePage';
 import Platforms from './components/Platforms';
 import Testimonials from './components/Testimonials';
-import DoctorsSubscription from './components/DoctorsSubscription';
 import DoctorsVideoPage from './components/DoctorsVideoPage';
 import Footer from './components/Footer';
 import { Episode } from './types';
@@ -86,7 +85,6 @@ const App: React.FC = () => {
             </div>
 
             <Topics />
-            <DoctorsSubscription onViewPage={() => handleNavigate('doctors')} />
             <About />
             <Philosophy />
             <EpisodeList
