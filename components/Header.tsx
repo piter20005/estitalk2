@@ -78,7 +78,7 @@ const Header: React.FC<HeaderProps> = ({ onNavigate }) => {
             </button>
           ))}
           <button
-            onClick={() => handleNavClick('home', '#listen')}
+            onClick={() => handleNavClick('home', '#newsletter')}
             className="px-6 py-2 border border-esti-dark rounded-full text-xs uppercase tracking-widest hover:bg-esti-dark hover:text-white transition-all duration-300"
           >
             Subskrybuj

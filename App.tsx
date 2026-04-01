@@ -9,6 +9,7 @@ import AllEpisodes from './components/AllEpisodes';
 import EpisodePage from './components/EpisodePage';
 import Platforms from './components/Platforms';
 import Testimonials from './components/Testimonials';
+import Newsletter from './components/Newsletter';
 import DoctorsVideoPage from './components/DoctorsVideoPage';
 import Footer from './components/Footer';
 import { Episode } from './types';
@@ -19,35 +20,46 @@ const App: React.FC = () => {
   const [currentView, setCurrentView] = useState<'home' | 'episodes' | 'episode' | 'doctors'>('home');
   const [selectedEpisode, setSelectedEpisode] = useState<Episode | null>(null);
   const [doctorsUnlocked, setDoctorsUnlocked] = useState(false);
+  const [pendingEpisodeId, setPendingEpisodeId] = useState<string | null>(null);
 
-  // On mount: check for payment token OR hash-based routing
+  // On mount: check localStorage, payment token, and hash routing
   useEffect(() => {
+    // Restore doctors access from previous session
+    if (localStorage.getItem('doctors_access') === 'true') {
+      setDoctorsUnlocked(true);
+    }
+
+    // Payment success token
     const params = new URLSearchParams(window.location.search);
     if (params.get('dkey') === ACCESS_TOKEN) {
       setDoctorsUnlocked(true);
+      localStorage.setItem('doctors_access', 'true');
       setCurrentView('doctors');
       window.history.replaceState({}, '', '/#doctors');
       return;
     }
-    if (window.location.hash === '#doctors') {
+
+    // Hash-based routing
+    const hash = window.location.hash;
+    if (hash === '#doctors') {
       setCurrentView('doctors');
+    } else if (hash.startsWith('#episode/')) {
+      const episodeId = decodeURIComponent(hash.replace('#episode/', ''));
+      setPendingEpisodeId(episodeId);
+      setCurrentView('episodes');
     }
   }, []);
 
-  // Restore smooth scroll behavior for anchor links
+  // Smooth scroll for anchor links on home page
   useEffect(() => {
     if (currentView === 'home') {
       const handleAnchorClick = (e: MouseEvent) => {
-        const target = e.target as HTMLElement;
-        const anchor = target.closest('a');
+        const anchor = (e.target as HTMLElement).closest('a');
         if (anchor && anchor.getAttribute('href')?.startsWith('#')) {
           e.preventDefault();
           const targetId = anchor.getAttribute('href');
           if (targetId && targetId !== '#') {
-            const targetElement = document.querySelector(targetId);
-            if (targetElement) {
-              targetElement.scrollIntoView({ behavior: 'smooth' });
-            }
+            document.querySelector(targetId)?.scrollIntoView({ behavior: 'smooth' });
           }
         }
       };
@@ -71,6 +83,7 @@ const App: React.FC = () => {
     setSelectedEpisode(episode);
     setCurrentView('episode');
     window.scrollTo(0, 0);
+    window.history.pushState({}, '', `/#episode/${encodeURIComponent(episode.id)}`);
   };
 
   return (
@@ -82,7 +95,7 @@ const App: React.FC = () => {
           <>
             <Hero />
 
-            {/* Infinite Marquee text divider */}
+            {/* Infinite Marquee */}
             <div className="bg-esti-dark py-4 overflow-hidden whitespace-nowrap relative flex">
               <div className="animate-scroll flex gap-8 min-w-full">
                 {[...Array(10)].map((_, i) => (
@@ -108,6 +121,7 @@ const App: React.FC = () => {
               onEpisodeClick={handleEpisodeClick}
             />
             <Testimonials />
+            <Newsletter />
             <Platforms />
           </>
         )}
@@ -116,13 +130,18 @@ const App: React.FC = () => {
           <AllEpisodes
             onBack={() => handleNavigate('home')}
             onEpisodeClick={handleEpisodeClick}
+            pendingEpisodeId={pendingEpisodeId}
+            onPendingResolved={() => setPendingEpisodeId(null)}
           />
         )}
 
         {currentView === 'episode' && selectedEpisode && (
           <EpisodePage
             episode={selectedEpisode}
-            onBack={() => setCurrentView('episodes')}
+            onBack={() => {
+              setCurrentView('episodes');
+              window.history.pushState({}, '', '/');
+            }}
           />
         )}
 
@@ -134,8 +153,7 @@ const App: React.FC = () => {
         )}
       </main>
 
-      {currentView !== 'episode' && <Footer onNavigate={handleNavigate} />}
-      {currentView === 'episode' && <Footer onNavigate={handleNavigate} />}
+      <Footer onNavigate={handleNavigate} />
     </div>
   );
 };

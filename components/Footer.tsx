@@ -1,5 +1,5 @@
 import React from 'react';
-import { Instagram, Facebook, Mail } from 'lucide-react';
+import { Mail } from 'lucide-react';
 
 interface FooterProps {
   onNavigate: (view: 'home' | 'episodes' | 'doctors') => void;
@@ -67,12 +67,6 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
           </p>
 
           <div className="flex gap-6">
-            <a href="#" className="opacity-60 hover:opacity-100 hover:text-esti-beige transition-all">
-              <Instagram size={20} />
-            </a>
-            <a href="#" className="opacity-60 hover:opacity-100 hover:text-esti-beige transition-all">
-              <Facebook size={20} />
-            </a>
             <a href="mailto:kontakt@estitalk.pl" className="opacity-60 hover:opacity-100 hover:text-esti-beige transition-all">
               <Mail size={20} />
             </a>

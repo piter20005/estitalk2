@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Search, ChevronDown, Filter, Loader2, ArrowLeft } from 'lucide-react';
 import { useEpisodes } from '../hooks/useEpisodes';
 import EpisodeCard from './EpisodeCard';
@@ -7,10 +7,23 @@ import { Episode } from '../types';
 interface AllEpisodesProps {
   onBack: () => void;
   onEpisodeClick?: (episode: Episode) => void;
+  pendingEpisodeId?: string | null;
+  onPendingResolved?: () => void;
 }
 
-const AllEpisodes: React.FC<AllEpisodesProps> = ({ onBack, onEpisodeClick }) => {
+const AllEpisodes: React.FC<AllEpisodesProps> = ({ onBack, onEpisodeClick, pendingEpisodeId, onPendingResolved }) => {
   const { episodes, loading } = useEpisodes();
+
+  // Auto-open episode from direct URL link
+  useEffect(() => {
+    if (pendingEpisodeId && episodes.length > 0 && onEpisodeClick) {
+      const episode = episodes.find(e => e.id === pendingEpisodeId);
+      if (episode) {
+        onEpisodeClick(episode);
+        onPendingResolved?.();
+      }
+    }
+  }, [pendingEpisodeId, episodes]);
   const [searchQuery, setSearchQuery] = useState('');
   const [sortOrder, setSortOrder] = useState<'newest' | 'oldest'>('newest');
   const [selectedSeason, setSelectedSeason] = useState<number | 'all'>('all');
