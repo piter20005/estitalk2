@@ -60,95 +60,148 @@ const FALLBACK_EPISODES: Episode[] = [
   }
 ];
 
+// --- Cache ---
+// Modułowy (in-memory): zeruje się dopiero przy pełnym odświeżeniu strony.
+// Dzięki niemu EpisodeList i AllEpisodes korzystają z tego samego fetch.
+let memoryCache: Episode[] | null = null;
+
+const CACHE_KEY = 'estitalk_episodes_v1';
+const CACHE_TTL_MS = 60 * 60 * 1000; // 1 godzina
+
+function readLocalCache(): Episode[] | null {
+  try {
+    const raw = localStorage.getItem(CACHE_KEY);
+    if (!raw) return null;
+    const { episodes, timestamp } = JSON.parse(raw);
+    if (Date.now() - timestamp > CACHE_TTL_MS) return null;
+    // JSON serializuje Date jako string — przywróć obiekty Date
+    return (episodes as any[]).map(e => ({ ...e, publishDate: new Date(e.publishDate) }));
+  } catch {
+    return null;
+  }
+}
+
+function writeLocalCache(episodes: Episode[]) {
+  try {
+    localStorage.setItem(CACHE_KEY, JSON.stringify({ episodes, timestamp: Date.now() }));
+  } catch {
+    // tryb prywatny lub pełny storage — ignorujemy
+  }
+}
+
+function parseXml(xmlText: string): Episode[] {
+  const parser = new DOMParser();
+  const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
+  const items = xmlDoc.querySelectorAll('item');
+
+  let channelImage = '';
+  const imgTags = xmlDoc.getElementsByTagName('image');
+  if (imgTags.length > 0) {
+    const urlTag = imgTags[0].getElementsByTagName('url')[0];
+    if (urlTag) channelImage = urlTag.textContent || '';
+  }
+  if (!channelImage) {
+    const itunesImage = xmlDoc.getElementsByTagName('itunes:image')[0];
+    if (itunesImage) channelImage = itunesImage.getAttribute('href') || '';
+  }
+
+  return Array.from(items).map(item => {
+    const title = item.querySelector('title')?.textContent || '';
+    const descriptionHtml = item.querySelector('description')?.textContent || '';
+    const pubDateText = item.querySelector('pubDate')?.textContent || '';
+    const link = item.querySelector('link')?.textContent || '';
+    const guid = item.querySelector('guid')?.textContent || '';
+
+    const itunesImageNode = item.getElementsByTagName('itunes:image')[0];
+    const itunesImage = itunesImageNode ? itunesImageNode.getAttribute('href') : null;
+
+    const itunesSeasonNode = item.getElementsByTagName('itunes:season')[0];
+    const season = itunesSeasonNode ? itunesSeasonNode.textContent : '1';
+
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = descriptionHtml;
+    const cleanDescription = tempDiv.textContent || tempDiv.innerText || '';
+
+    const pubDate = new Date(pubDateText);
+
+    return {
+      id: guid,
+      title,
+      description: cleanDescription.trim(),
+      duration: pubDate.toLocaleDateString('pl-PL'),
+      publishDate: pubDate,
+      image: itunesImage || channelImage || 'https://images.unsplash.com/photo-1579684385127-1ef15d508118?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
+      links: {
+        youtube: LINKS.youtube,
+        spotify: link || LINKS.spotify,
+        apple: LINKS.apple,
+      },
+      season: season ? parseInt(season) : 1,
+    };
+  });
+}
+
+async function fetchFromRSS(): Promise<Episode[]> {
+  const RSS_URL = 'https://anchor.fm/s/f8d844f8/podcast/rss';
+  const PROXY_URL = `https://api.allorigins.win/raw?url=${encodeURIComponent(RSS_URL)}`;
+  const response = await fetch(PROXY_URL);
+  if (!response.ok) throw new Error('Network response was not ok');
+  const xmlText = await response.text();
+  const episodes = parseXml(xmlText);
+  if (episodes.length === 0) throw new Error('No episodes parsed');
+  return episodes;
+}
+
 export const useEpisodes = () => {
-  const [episodes, setEpisodes] = useState<Episode[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [episodes, setEpisodes] = useState<Episode[]>(() => memoryCache ?? []);
+  const [loading, setLoading] = useState(!memoryCache);
   const [error, setError] = useState(false);
 
   useEffect(() => {
-    const fetchEpisodes = async () => {
+    // Funkcja odświeżająca dane w tle (bez spinnera)
+    const refreshInBackground = async () => {
       try {
-        const RSS_URL = 'https://anchor.fm/s/f8d844f8/podcast/rss';
-        // Use allorigins.win to bypass CORS and get full raw XML (no item limit like rss2json)
-        const PROXY_URL = `https://api.allorigins.win/raw?url=${encodeURIComponent(RSS_URL)}`;
+        const fresh = await fetchFromRSS();
+        memoryCache = fresh;
+        writeLocalCache(fresh);
+        setEpisodes(fresh);
+      } catch {
+        // Po cichu — użytkownik już widzi dane z cache
+      }
+    };
 
-        const response = await fetch(PROXY_URL);
-        if (!response.ok) {
-           throw new Error('Network response was not ok');
-        }
-        
-        const xmlText = await response.text();
-        const parser = new DOMParser();
-        const xmlDoc = parser.parseFromString(xmlText, "text/xml");
-        
-        const items = xmlDoc.querySelectorAll("item");
-        
-        // Try to get channel image
-        let channelImage = "";
-        const imgTags = xmlDoc.getElementsByTagName("image");
-        if (imgTags.length > 0) {
-            const urlTag = imgTags[0].getElementsByTagName("url")[0];
-            if (urlTag) channelImage = urlTag.textContent || "";
-        }
-        
-        // Fallback channel image from itunes:image at channel level
-        if (!channelImage) {
-           const itunesImage = xmlDoc.getElementsByTagName("itunes:image")[0];
-           if (itunesImage) channelImage = itunesImage.getAttribute("href") || "";
-        }
+    // 1. Modułowy cache — ta sama sesja (np. home → odcinki)
+    if (memoryCache) {
+      // Dane już w state (initializer wyżej), odśwież w tle
+      refreshInBackground();
+      return;
+    }
 
-        const mappedEpisodes: Episode[] = Array.from(items).map((item) => {
-           const title = item.querySelector("title")?.textContent || "";
-           const descriptionHtml = item.querySelector("description")?.textContent || "";
-           const pubDateText = item.querySelector("pubDate")?.textContent || "";
-           const link = item.querySelector("link")?.textContent || "";
-           const guid = item.querySelector("guid")?.textContent || "";
-           
-           // Extract Itunes Metadata
-           const itunesImageNode = item.getElementsByTagName("itunes:image")[0];
-           const itunesImage = itunesImageNode ? itunesImageNode.getAttribute("href") : null;
-           
-           const itunesSeasonNode = item.getElementsByTagName("itunes:season")[0];
-           const season = itunesSeasonNode ? itunesSeasonNode.textContent : "1";
+    // 2. localStorage cache — poprzednia wizyta
+    const cached = readLocalCache();
+    if (cached) {
+      memoryCache = cached;
+      setEpisodes(cached);
+      setLoading(false);
+      refreshInBackground();
+      return;
+    }
 
-           // Cleanup description HTML
-           const tempDiv = document.createElement("div");
-           tempDiv.innerHTML = descriptionHtml;
-           const cleanDescription = tempDiv.textContent || tempDiv.innerText || "";
-
-           const pubDate = new Date(pubDateText);
-
-           return {
-              id: guid,
-              title: title,
-              description: cleanDescription.trim(),
-              duration: pubDate.toLocaleDateString('pl-PL'),
-              publishDate: pubDate,
-              image: itunesImage || channelImage || "https://images.unsplash.com/photo-1579684385127-1ef15d508118?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
-              links: {
-                youtube: LINKS.youtube,
-                spotify: link || LINKS.spotify, // Often RSS link points to public episode page
-                apple: LINKS.apple,
-              },
-              season: season ? parseInt(season) : 1
-           };
-        });
-
-        if (mappedEpisodes.length > 0) {
-           setEpisodes(mappedEpisodes);
-        } else {
-           setEpisodes(FALLBACK_EPISODES);
-        }
+    // 3. Pierwsze wejście — normalny fetch ze spinnerem
+    (async () => {
+      try {
+        const fresh = await fetchFromRSS();
+        memoryCache = fresh;
+        writeLocalCache(fresh);
+        setEpisodes(fresh);
       } catch (err) {
-        console.error('Failed to fetch Anchor episodes:', err);
+        console.error('Failed to fetch episodes:', err);
         setError(true);
         setEpisodes(FALLBACK_EPISODES);
       } finally {
         setLoading(false);
       }
-    };
-
-    fetchEpisodes();
+    })();
   }, []);
 
   return { episodes, loading, error };
