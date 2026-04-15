@@ -30,32 +30,31 @@ const DoctorsPromo: React.FC<DoctorsPromoProps> = ({ onNavigate }) => {
           <div className="w-full lg:w-5/12 shrink-0">
             <button
               onClick={() => onNavigate('doctors')}
-              className="relative w-full aspect-video bg-zinc-900 rounded-sm overflow-hidden group block"
+              className="relative w-full aspect-video rounded-sm overflow-hidden group block"
               aria-label="Przejdź do odcinka For Doctors"
             >
-              {/* Background gradient */}
-              <div className="absolute inset-0 bg-gradient-to-br from-zinc-800 to-zinc-950" />
-
-              {/* Decorative lines */}
-              <div className="absolute inset-0 opacity-10">
-                <div className="absolute top-1/4 left-0 right-0 h-px bg-esti-gold" />
-                <div className="absolute top-3/4 left-0 right-0 h-px bg-esti-gold" />
-                <div className="absolute left-1/4 top-0 bottom-0 w-px bg-esti-gold" />
-                <div className="absolute left-3/4 top-0 bottom-0 w-px bg-esti-gold" />
-              </div>
+              {/* Background photo */}
+              <img
+                src="https://res.cloudinary.com/dgcg6hz1d/image/upload/q_auto/f_auto/v1776275435/IMG_1118_xhskkm.jpg"
+                alt="EstiTalk for Doctors — nagranie"
+                className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                loading="lazy"
+              />
+              {/* Dark overlay */}
+              <div className="absolute inset-0 bg-black/65 group-hover:bg-black/55 transition-colors duration-300" />
 
               {/* Lock icon */}
-              <div className="absolute inset-0 flex flex-col items-center justify-center gap-4">
-                <div className="w-16 h-16 rounded-full border border-esti-gold/40 flex items-center justify-center bg-esti-gold/10 group-hover:bg-esti-gold/20 group-hover:border-esti-gold/70 transition-all duration-300">
+              <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 z-10">
+                <div className="w-16 h-16 rounded-full border border-esti-gold/50 flex items-center justify-center bg-esti-gold/10 group-hover:bg-esti-gold/25 group-hover:border-esti-gold/80 transition-all duration-300">
                   <Lock size={24} className="text-esti-gold" />
                 </div>
-                <span className="text-white/40 text-xs uppercase tracking-widest font-medium group-hover:text-white/60 transition-colors">
+                <span className="text-white/50 text-xs uppercase tracking-widest font-medium group-hover:text-white/70 transition-colors">
                   Kup dostęp, aby odblokować
                 </span>
               </div>
 
               {/* Bottom label */}
-              <div className="absolute bottom-0 left-0 right-0 p-5 bg-gradient-to-t from-black/80 to-transparent">
+              <div className="absolute bottom-0 left-0 right-0 p-5 bg-gradient-to-t from-black/80 to-transparent z-10">
                 <p className="text-esti-gold text-[10px] font-bold tracking-[0.2em] uppercase">
                   EstiTalk for Doctors
                 </p>

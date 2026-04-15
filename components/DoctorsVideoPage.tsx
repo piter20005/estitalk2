@@ -67,9 +67,9 @@ const DoctorsVideoPage: React.FC<DoctorsVideoPageProps> = ({ onBack, isUnlocked 
             <div className="relative aspect-video w-full bg-esti-dark overflow-hidden">
               {/* Thumbnail image */}
               <img
-                src="/images/studio.png"
+                src="https://res.cloudinary.com/dgcg6hz1d/image/upload/q_auto/f_auto/v1776275430/IMG_0905_dtrkre.jpg"
                 alt="EstiTalk for Doctors – podgląd odcinka"
-                className="absolute inset-0 w-full h-full object-cover opacity-40"
+                className="absolute inset-0 w-full h-full object-cover opacity-50"
               />
               {/* Lock overlay */}
               <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 z-10">

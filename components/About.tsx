@@ -11,7 +11,7 @@ const About: React.FC = () => {
           <div className="w-full lg:w-5/12 relative group">
             <div className="relative z-10 aspect-[3/4] overflow-hidden rounded-sm">
               <img
-                src="/images/author 2.png"
+                src="https://res.cloudinary.com/dgcg6hz1d/image/upload/q_auto/f_auto/v1776275432/IMG_0909_bw7ui9.jpg"
                 alt="Dr Tatiana Jasińska"
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                 loading="lazy"
@@ -70,6 +70,30 @@ const About: React.FC = () => {
             </div>
           </div>
 
+        </div>
+      </div>
+
+      {/* Guest photo gallery */}
+      <div className="container mx-auto px-6 mt-20 relative z-10">
+        <div className="flex items-center gap-4 mb-8">
+          <div className="h-px w-12 bg-esti-gold" />
+          <span className="text-xs font-bold tracking-[0.2em] uppercase text-esti-gold">Goście programu</span>
+        </div>
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+          {[
+            { src: 'https://res.cloudinary.com/dgcg6hz1d/image/upload/q_auto/f_auto/v1776275443/IMG_1894_nwsj2s.jpg', alt: 'Gość programu EstiTalk' },
+            { src: 'https://res.cloudinary.com/dgcg6hz1d/image/upload/q_auto/f_auto/v1776275442/IMG_0905_2_cfrlma.jpg', alt: 'Gość programu EstiTalk' },
+            { src: 'https://res.cloudinary.com/dgcg6hz1d/image/upload/q_auto/f_auto/v1776275427/IMG_0317_lf1an4.jpg', alt: 'Gość programu EstiTalk' },
+          ].map((photo, i) => (
+            <div key={i} className="aspect-[3/4] overflow-hidden rounded-sm group">
+              <img
+                src={photo.src}
+                alt={photo.alt}
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                loading="lazy"
+              />
+            </div>
+          ))}
         </div>
       </div>
     </section>

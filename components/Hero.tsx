@@ -61,7 +61,7 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
               {/* Main Image */}
               <div className="w-full h-full overflow-hidden rounded-2xl relative z-20 shadow-2xl">
                 <img
-                  src="/images/author.jpg"
+                  src="https://res.cloudinary.com/dgcg6hz1d/image/upload/q_auto/f_auto/v1776275446/IMG_1160_drehmt.jpg"
                   alt="Dr Tatiana Jasińska"
                   className="w-full h-full object-cover hover:scale-105 transition-transform duration-[2s]"
                   loading="eager"
