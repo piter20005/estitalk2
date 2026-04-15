@@ -1,7 +1,11 @@
 import React from 'react';
-import { Sparkles, Microscope, Leaf, Brain } from 'lucide-react';
+import { Sparkles, Microscope, Leaf, Brain, ArrowRight } from 'lucide-react';
 
-const Topics: React.FC = () => {
+interface TopicsProps {
+  onNavigate: (view: 'home' | 'episodes' | 'doctors') => void;
+}
+
+const Topics: React.FC<TopicsProps> = ({ onNavigate }) => {
   const topics = [
     {
       title: 'Medycyna Estetyczna',
@@ -62,6 +66,30 @@ const Topics: React.FC = () => {
               </p>
             </div>
           ))}
+        </div>
+
+        {/* 5th card — For Doctors premium episode */}
+        <div className="mt-8">
+          <div className="bg-esti-dark border border-esti-gold/30 p-8 md:p-12 rounded-sm flex flex-col md:flex-row items-start md:items-center gap-8">
+            <div className="flex-1">
+              <span className="text-esti-gold text-[10px] font-bold tracking-[0.25em] uppercase mb-3 block">
+                Tylko dla lekarzy
+              </span>
+              <h3 className="font-serif text-2xl md:text-3xl text-white mb-3">
+                Toksyna botulinowa — dr hab. Joanna Czuwara
+              </h3>
+              <p className="text-white/60 font-light text-sm leading-relaxed max-w-xl">
+                Ekskluzywny odcinek dla lekarzy. Szczegółowa wiedza kliniczna z zakresu neurotoksyn — od mechanizmu działania po zaawansowane protokoły terapeutyczne.
+              </p>
+            </div>
+            <button
+              onClick={() => onNavigate('doctors')}
+              className="shrink-0 group flex items-center gap-3 bg-esti-gold text-white px-8 py-4 rounded-sm hover:bg-esti-gold/80 transition-all duration-300 text-sm font-bold uppercase tracking-widest"
+            >
+              <span>Zobacz odcinek</span>
+              <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+            </button>
+          </div>
         </div>
       </div>
     </section>

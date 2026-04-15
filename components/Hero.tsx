@@ -1,18 +1,30 @@
 import React from 'react';
-import { Play, ArrowDown } from 'lucide-react';
+import { Play, ArrowDown, ArrowRight } from 'lucide-react';
 
-const Hero: React.FC = () => {
+interface HeroProps {
+  onNavigate: (view: 'home' | 'episodes' | 'doctors') => void;
+}
+
+const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
   return (
     <section className="relative min-h-screen flex items-center pt-20 overflow-hidden">
       <div className="container mx-auto px-6 relative z-10">
         <div className="flex flex-col lg:flex-row items-end lg:items-center gap-12">
-          
+
           {/* Text Content */}
           <div className="lg:w-1/2 flex flex-col gap-6 animate-fade-in-up">
-            <div className="inline-block">
-                <span className="bg-esti-beige/30 px-4 py-1 rounded-full text-xs font-bold tracking-widest uppercase text-esti-dark mb-4 inline-block">
+            <div className="flex flex-wrap items-center gap-3 mb-2">
+              <span className="bg-esti-beige/30 px-4 py-1 rounded-full text-xs font-bold tracking-widest uppercase text-esti-dark inline-block">
                 Nowy Sezon
-                </span>
+              </span>
+              <button
+                onClick={() => onNavigate('doctors')}
+                className="group flex items-center gap-2 bg-esti-dark/5 hover:bg-esti-dark border border-esti-dark/20 hover:border-esti-dark px-4 py-1 rounded-full text-xs font-bold tracking-widest uppercase text-esti-dark hover:text-white transition-all duration-300"
+              >
+                <Play size={10} fill="currentColor" />
+                <span>For Doctors</span>
+                <ArrowRight size={10} className="group-hover:translate-x-0.5 transition-transform" />
+              </button>
             </div>
             <h1 className="font-serif text-6xl md:text-8xl leading-[0.9] text-esti-dark">
               Rozmowy <br />
@@ -22,16 +34,16 @@ const Hero: React.FC = () => {
             <p className="font-sans font-light text-lg md:text-xl text-gray-600 max-w-md mt-4 leading-relaxed">
               Dr n. med. Tatiana Jasińska zaprasza do świata medycyny estetycznej, dermatologii i świadomej pielęgnacji. Bez tabu, z pasją i naukową precyzją.
             </p>
-            
+
             <div className="flex flex-col sm:flex-row gap-4 mt-8">
-              <a 
+              <a
                 href="#listen"
                 className="group flex items-center justify-center gap-3 bg-esti-dark text-white px-8 py-4 rounded-sm hover:bg-zinc-800 transition-all duration-300"
               >
                 <Play size={18} fill="currentColor" className="group-hover:scale-110 transition-transform"/>
                 <span className="uppercase tracking-widest text-sm font-medium">Posłuchaj Odcinka</span>
               </a>
-              <a 
+              <a
                 href="#episodes"
                 className="flex items-center justify-center gap-3 border border-zinc-300 px-8 py-4 rounded-sm hover:border-esti-dark transition-all duration-300"
               >
@@ -45,9 +57,9 @@ const Hero: React.FC = () => {
              <div className="relative aspect-[4/5] md:aspect-[3/4] lg:w-[80%] ml-auto">
                 {/* Main Image - Dr Tatiana */}
                 <div className="w-full h-full overflow-hidden rounded-t-[10rem] rounded-b-lg relative z-20 shadow-2xl">
-                  <img 
-                    src="/images/author.jpg" 
-                    alt="Dr Tatiana Jasińska" 
+                  <img
+                    src="/images/author.jpg"
+                    alt="Dr Tatiana Jasińska"
                     className="w-full h-full object-cover hover:scale-105 transition-transform duration-[2s]"
                   />
                   {/* Overlay Gradient */}
@@ -57,7 +69,7 @@ const Hero: React.FC = () => {
                 {/* Decorative Elements */}
                 <div className="absolute -bottom-8 -left-8 w-48 h-48 bg-esti-beige rounded-full z-10 mix-blend-multiply opacity-80 blur-2xl"></div>
                 <div className="absolute top-20 -right-8 w-64 h-64 border border-esti-taupe/20 rounded-full z-0"></div>
-                
+
                 {/* Floating Badge */}
                 <div className="absolute bottom-12 -left-6 z-30 bg-white p-6 shadow-xl max-w-[200px]">
                     <p className="font-serif text-2xl italic text-esti-dark leading-none">"Całe miasto słucha Esti Talk."</p>
