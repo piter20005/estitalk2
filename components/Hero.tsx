@@ -1,7 +1,11 @@
 import React from 'react';
 import { Play, ArrowDown, ArrowRight } from 'lucide-react';
 
-const Hero: React.FC = () => {
+interface HeroProps {
+  onNavigate: (view: 'home' | 'episodes' | 'doctors') => void;
+}
+
+const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
   return (
     <section className="relative min-h-screen flex items-center pt-20 overflow-hidden">
       <div className="container mx-auto px-6 relative z-10">
@@ -9,10 +13,18 @@ const Hero: React.FC = () => {
 
           {/* Text Content */}
           <div className="lg:w-1/2 flex flex-col gap-6 animate-fade-in-up">
-            <div className="inline-block">
-              <span className="bg-esti-beige/30 px-4 py-1 rounded-full text-xs font-bold tracking-widest uppercase text-esti-dark mb-4 inline-block">
+            <div className="flex flex-wrap items-center gap-3 mb-2">
+              <span className="bg-esti-beige/30 px-4 py-1 rounded-full text-xs font-bold tracking-widest uppercase text-esti-dark inline-block">
                 Nowy Sezon
               </span>
+              <button
+                onClick={() => onNavigate('doctors')}
+                className="group flex items-center gap-2 bg-esti-dark/5 hover:bg-esti-dark border border-esti-dark/20 hover:border-esti-dark px-4 py-1 rounded-full text-xs font-bold tracking-widest uppercase text-esti-dark hover:text-white transition-all duration-300"
+              >
+                <Play size={10} fill="currentColor" />
+                <span>For Doctors</span>
+                <ArrowRight size={10} className="group-hover:translate-x-0.5 transition-transform" />
+              </button>
             </div>
             <h1 className="font-serif text-6xl md:text-8xl leading-[0.9] text-esti-dark">
               Rozmowy <br />

@@ -11,6 +11,7 @@ import Platforms from './components/Platforms';
 import Testimonials from './components/Testimonials';
 import Newsletter from './components/Newsletter';
 import DoctorsVideoPage from './components/DoctorsVideoPage';
+import DoctorsPromo from './components/DoctorsPromo';
 import Footer from './components/Footer';
 import { Episode } from './types';
 
@@ -93,7 +94,7 @@ const App: React.FC = () => {
       <main>
         {currentView === 'home' && (
           <>
-            <Hero />
+            <Hero onNavigate={handleNavigate} />
 
             {/* Infinite Marquee */}
             <div className="bg-esti-dark py-4 overflow-hidden whitespace-nowrap relative flex">
@@ -113,13 +114,14 @@ const App: React.FC = () => {
               </div>
             </div>
 
-            <Topics />
+            <Topics onNavigate={handleNavigate} />
             <About />
             <Philosophy />
             <EpisodeList
               onViewAll={() => handleNavigate('episodes')}
               onEpisodeClick={handleEpisodeClick}
             />
+            <DoctorsPromo onNavigate={handleNavigate} />
             <Testimonials />
             <Newsletter />
             <Platforms />
