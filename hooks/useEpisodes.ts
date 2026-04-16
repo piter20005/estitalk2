@@ -89,6 +89,14 @@ function parseXml(xmlText: string): Episode[] {
   });
 }
 
+async function fetchFromStaticJson(): Promise<Episode[]> {
+  const res = await fetch('/episodes.json', { signal: AbortSignal.timeout(3000) });
+  if (!res.ok) throw new Error('No static JSON');
+  const data = await res.json();
+  if (!data.episodes?.length) throw new Error('Static JSON is empty');
+  return (data.episodes as any[]).map(e => ({ ...e, publishDate: new Date(e.publishDate) }));
+}
+
 async function fetchFromProxy(): Promise<Episode[]> {
   const res = await fetch(
     `https://api.allorigins.win/raw?url=${encodeURIComponent(RSS_URL)}`,
@@ -102,7 +110,11 @@ async function fetchFromProxy(): Promise<Episode[]> {
 }
 
 async function fetchFromRSS(): Promise<Episode[]> {
-  return fetchFromProxy();
+  try {
+    return await fetchFromStaticJson();
+  } catch {
+    return await fetchFromProxy();
+  }
 }
 
 export const useEpisodes = () => {
