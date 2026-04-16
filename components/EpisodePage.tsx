@@ -25,7 +25,6 @@ export default function EpisodePage({ episode }: EpisodePageProps) {
     .split(/\n{2,}/)
     .map((p) => p.trim())
     .filter(Boolean);
-  const [leadParagraph, ...bodyParagraphs] = paragraphs;
 
   const hasGuests = Boolean(episode.guests && episode.guests.length > 0);
   const hasTopics = Boolean(episode.topics && episode.topics.length > 0);
@@ -93,20 +92,23 @@ export default function EpisodePage({ episode }: EpisodePageProps) {
           <span className="block w-12 h-px bg-esti-gold mb-5" aria-hidden="true" />
           <h2 className="font-serif text-3xl md:text-4xl text-esti-dark mb-8">O odcinku</h2>
 
-          <article className="max-w-[68ch]">
-            {leadParagraph && (
-              <p className="font-sans text-xl md:text-2xl font-light leading-relaxed text-esti-dark mb-6">
-                {leadParagraph}
-              </p>
+          <article>
+            {paragraphs.length > 0 ? (
+              paragraphs.map((p, i) => (
+                <p
+                  key={i}
+                  className="font-sans font-light text-base leading-relaxed text-esti-taupe mb-4"
+                >
+                  {p}
+                </p>
+              ))
+            ) : (
+              episode.description && (
+                <p className="font-sans font-light text-base leading-relaxed text-esti-taupe whitespace-pre-line">
+                  {episode.description}
+                </p>
+              )
             )}
-            {bodyParagraphs.map((p, i) => (
-              <p
-                key={i}
-                className="font-sans font-light text-base md:text-lg leading-relaxed text-esti-taupe mb-5"
-              >
-                {p}
-              </p>
-            ))}
 
             {Boolean(episode.notes) && (
               <div className="mt-10 pl-5 border-l-2 border-esti-gold/60 text-esti-taupe/80 italic space-y-3 text-sm">
