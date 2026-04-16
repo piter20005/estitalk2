@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Search } from 'lucide-react';
+import { ArrowLeft, Search, X } from 'lucide-react';
 import GuestCard from './GuestCard';
 import type { Guest } from '@/types';
 
@@ -40,19 +40,29 @@ export default function AllGuests({ guests }: AllGuestsProps) {
           </p>
         </div>
 
-        <div className="bg-white p-4 shadow-sm rounded-sm mb-12 border border-gray-100">
-          <div className="relative group">
+        <div className="mb-12">
+          <div className="relative max-w-2xl group">
             <Search
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-esti-dark transition-colors"
-              size={18}
+              className="absolute left-0 top-1/2 -translate-y-1/2 text-esti-taupe group-focus-within:text-esti-dark transition-colors"
+              size={20}
             />
             <input
               type="text"
               placeholder="Szukaj po imieniu, profesji…"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-3 bg-transparent border-b border-gray-200 outline-none focus:border-esti-dark font-sans"
+              className="w-full pl-9 pr-10 py-3 border-b border-esti-beige focus:border-esti-dark bg-transparent outline-none text-base md:text-lg font-light transition-colors"
             />
+            {query && (
+              <button
+                type="button"
+                onClick={() => setQuery('')}
+                className="absolute right-0 top-1/2 -translate-y-1/2 text-esti-taupe hover:text-esti-dark transition-colors"
+                aria-label="Wyczyść wyszukiwanie"
+              >
+                <X size={18} />
+              </button>
+            )}
           </div>
         </div>
 
