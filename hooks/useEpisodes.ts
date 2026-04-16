@@ -37,40 +37,6 @@ function writeLocalCache(episodes: Episode[]) {
 
 // --- Parsery ---
 
-async function fetchFromRSS2Json(): Promise<Episode[]> {
-  const res = await fetch(
-    `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(RSS_URL)}`,
-    { signal: AbortSignal.timeout(7000) }
-  );
-  if (!res.ok) throw new Error(`rss2json HTTP ${res.status}`);
-  const data = await res.json();
-  if (data.status !== 'ok' || !data.items?.length) throw new Error('Empty feed from rss2json');
-
-  const channelImage: string = data.feed?.image ?? '';
-
-  return data.items.map((item: any): Episode => {
-    const pubDate = new Date(item.pubDate);
-    const div = document.createElement('div');
-    div.innerHTML = item.description ?? '';
-    const desc = (div.textContent ?? '').trim();
-
-    return {
-      id: item.guid ?? item.link,
-      title: item.title,
-      description: desc,
-      duration: pubDate.toLocaleDateString('pl-PL'),
-      publishDate: pubDate,
-      image: item.thumbnail || item.enclosure?.link || channelImage,
-      links: {
-        spotify: item.link || LINKS.spotify,
-        apple: LINKS.apple,
-        youtube: LINKS.youtube,
-      },
-      season: parseInt(item['itunes:season'] ?? '1') || 1,
-    };
-  });
-}
-
 function parseXml(xmlText: string): Episode[] {
   const parser = new DOMParser();
   const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
@@ -136,12 +102,7 @@ async function fetchFromProxy(): Promise<Episode[]> {
 }
 
 async function fetchFromRSS(): Promise<Episode[]> {
-  try {
-    return await fetchFromRSS2Json();
-  } catch (e) {
-    console.warn('rss2json failed, falling back to allorigins:', e);
-    return await fetchFromProxy();
-  }
+  return fetchFromProxy();
 }
 
 export const useEpisodes = () => {
