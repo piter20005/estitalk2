@@ -1,19 +1,15 @@
-name: Fetch Episodes
+name: Sync RSS to Sanity
 
 on:
   schedule:
-    - cron: '*/15 * * * *'    # co 15 minut
-  workflow_dispatch:            # ręczne uruchomienie z zakładki Actions
-  push:
-    branches: [main]
-    paths:
-      - 'data/episode-meta.json'  # odbuduj episodes.json przy zmianie metadanych
+    - cron: '*/15 * * * *'   # co 15 minut
+  workflow_dispatch:          # ręczny start
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
-  fetch:
+  sync:
     runs-on: ubuntu-latest
 
     steps:
@@ -24,6 +20,10 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci --omit=dev --no-audit --no-fund --include=prod
 
       - name: Fetch RSS feed
         run: |
@@ -40,12 +40,16 @@ jobs:
           echo "Downloaded $(wc -c < /tmp/feed.xml) bytes"
           head -c 5 /tmp/feed.xml | grep -q '<' || { echo "::error::Response is not XML"; exit 1; }
 
-      - name: Parse and save episodes
-        run: node scripts/fetch-episodes.js /tmp/feed.xml
+      - name: Sync to Sanity
+        env:
+          SANITY_WRITE_TOKEN: ${{ secrets.SANITY_WRITE_TOKEN }}
+          NEXT_PUBLIC_SANITY_PROJECT_ID: ${{ vars.NEXT_PUBLIC_SANITY_PROJECT_ID }}
+          NEXT_PUBLIC_SANITY_DATASET: ${{ vars.NEXT_PUBLIC_SANITY_DATASET }}
+          NEXT_PUBLIC_SANITY_API_VERSION: ${{ vars.NEXT_PUBLIC_SANITY_API_VERSION }}
+        run: node scripts/sync-rss-to-sanity.js /tmp/feed.xml
 
-      - name: Commit and push if changed
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add public/episodes.json
-          git diff --staged --quiet && echo "No changes" || (git commit -m "chore: update episodes.json [skip ci]" && git push)
+      - name: Trigger Netlify build
+        if: success() && env.NETLIFY_BUILD_HOOK != ''
+        env:
+          NETLIFY_BUILD_HOOK: ${{ secrets.NETLIFY_BUILD_HOOK }}
+        run: curl -fsS -X POST "$NETLIFY_BUILD_HOOK" || echo "::warning::Netlify hook failed"
