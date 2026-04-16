@@ -91,8 +91,10 @@ export default function AllEpisodes({ episodes }: AllEpisodesProps) {
     <div className="min-h-screen bg-esti-light pt-24 pb-24">
       {/* Compact auto-hide bar */}
       <div
-        className={`fixed top-20 left-0 right-0 z-30 transition-transform duration-300 ease-out ${
-          compactBarVisible ? 'translate-y-0' : '-translate-y-[150%]'
+        className={`fixed top-20 left-0 right-0 z-30 transition-all duration-300 ease-out ${
+          compactBarVisible
+            ? 'translate-y-0 opacity-100 pointer-events-auto'
+            : '-translate-y-full opacity-0 pointer-events-none'
         }`}
         aria-hidden={!compactBarVisible}
       >
