@@ -2,8 +2,14 @@ import Link from 'next/link';
 import { ArrowLeft, Calendar, Music, Youtube, Podcast, ExternalLink, Clock } from 'lucide-react';
 import { PortableText } from 'next-sanity';
 import SanityImage from './SanityImage';
+import YouTubePreviewHero from './YouTubePreviewHero';
 import type { Episode } from '@/types';
-import { formatPublishDate, formatDurationSeconds, extractSpotifyEpisodeId } from '@/types';
+import {
+  formatPublishDate,
+  formatDurationSeconds,
+  extractSpotifyEpisodeId,
+  extractYouTubeId,
+} from '@/types';
 
 interface EpisodePageProps {
   episode: Episode;
@@ -11,44 +17,52 @@ interface EpisodePageProps {
 
 export default function EpisodePage({ episode }: EpisodePageProps) {
   const spotifyEpisodeId = extractSpotifyEpisodeId(episode.spotifyUrl);
+  const youtubeVideoId = extractYouTubeId(episode.youtubeUrl);
   const publishDate = formatPublishDate(episode.publishDate);
   const duration = formatDurationSeconds(episode.duration);
 
   return (
-    <div className="min-h-screen bg-esti-light pt-24 pb-20 animate-fade-in-up">
-      <div className="container mx-auto px-6 max-w-5xl">
+    <div className="min-h-screen bg-esti-light pb-20 animate-fade-in-up">
+      <YouTubePreviewHero
+        videoId={youtubeVideoId}
+        coverImage={episode.coverImage}
+        coverImageUrl={episode.coverImageUrl}
+        title={episode.title}
+      >
         <Link
           href="/odcinki"
-          className="group flex items-center gap-2 text-xs uppercase tracking-widest text-esti-taupe hover:text-esti-dark mb-8 transition-colors"
+          className="group inline-flex items-center gap-2 text-xs uppercase tracking-widest text-white/80 hover:text-white mb-6 transition-colors"
         >
-          <div className="p-2 border border-esti-taupe/30 rounded-full group-hover:border-esti-dark transition-colors">
+          <div className="p-2 border border-white/40 rounded-full group-hover:border-white transition-colors">
             <ArrowLeft size={14} />
           </div>
           <span>Wróć do listy</span>
         </Link>
 
-        <div className="mb-10 text-center md:text-left">
-          <span className="inline-block py-1 px-3 border border-esti-taupe/30 text-[10px] font-bold tracking-[0.2em] uppercase text-esti-taupe mb-4 rounded-sm">
-            Sezon {episode.season || 1}
-          </span>
-          <h1 className="font-serif text-4xl md:text-6xl text-esti-dark mb-6 leading-tight">{episode.title}</h1>
+        <span className="inline-block py-1 px-3 border border-white/40 text-[10px] font-bold tracking-[0.2em] uppercase text-white/90 mb-4 rounded-sm">
+          Sezon {episode.season || 1}
+        </span>
+        <h1 className="font-serif text-4xl md:text-7xl text-white mb-6 leading-tight">
+          {episode.title}
+        </h1>
 
-          <div className="flex flex-wrap items-center justify-center md:justify-start gap-6 text-esti-taupe font-light text-sm">
-            {publishDate && (
-              <div className="flex items-center gap-2">
-                <Calendar size={16} />
-                <span>{publishDate}</span>
-              </div>
-            )}
-            {duration && (
-              <div className="flex items-center gap-2">
-                <Clock size={16} />
-                <span>{duration}</span>
-              </div>
-            )}
-          </div>
+        <div className="flex flex-wrap items-center gap-6 text-white/80 font-light text-sm">
+          {publishDate && (
+            <div className="flex items-center gap-2">
+              <Calendar size={16} />
+              <span>{publishDate}</span>
+            </div>
+          )}
+          {duration && (
+            <div className="flex items-center gap-2">
+              <Clock size={16} />
+              <span>{duration}</span>
+            </div>
+          )}
         </div>
+      </YouTubePreviewHero>
 
+      <div className="container mx-auto px-6 max-w-5xl pt-16">
         <div className="bg-white p-4 shadow-sm border border-gray-100 rounded-sm mb-12">
           {spotifyEpisodeId ? (
             <iframe

@@ -104,3 +104,20 @@ export const extractSpotifyEpisodeId = (url: string | null | undefined): string 
   const m = url.match(/open\.spotify\.com\/episode\/([a-zA-Z0-9]+)/);
   return m ? m[1] : null;
 };
+
+/* ----------------------------- YouTube helper --------------------------- */
+
+export const extractYouTubeId = (url: string | null | undefined): string | null => {
+  if (!url) return null;
+  const patterns = [
+    /youtu\.be\/([A-Za-z0-9_-]{11})/,
+    /youtube\.com\/watch\?(?:[^&]*&)*v=([A-Za-z0-9_-]{11})/,
+    /youtube\.com\/embed\/([A-Za-z0-9_-]{11})/,
+    /youtube\.com\/shorts\/([A-Za-z0-9_-]{11})/,
+  ];
+  for (const re of patterns) {
+    const m = url.match(re);
+    if (m) return m[1];
+  }
+  return null;
+};
