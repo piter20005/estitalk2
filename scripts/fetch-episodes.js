@@ -1,12 +1,11 @@
-// GitHub Action script — fetches podcast RSS and saves as public/episodes.json
-// Runs server-side (no CORS), no external dependencies beyond Node.js built-ins.
+// GitHub Action script — parses podcast RSS and saves as public/episodes.json
+// Expects a pre-downloaded XML file path as the first CLI argument.
+// Usage: node scripts/fetch-episodes.js /tmp/feed.xml
 
-const https = require('https');
-const http = require('http');
 const fs = require('fs');
 const path = require('path');
 
-const RSS_URL = 'https://anchor.fm/s/f8d844f8/podcast/rss';
+const INPUT_PATH = process.argv[2];
 const OUTPUT_PATH = path.join(__dirname, '..', 'public', 'episodes.json');
 
 const LINKS = {
@@ -14,32 +13,6 @@ const LINKS = {
   apple: 'https://podcasts.apple.com/pl/podcast/estitalk-rozmowy-o-pi%C4%99knie-z-dr-tatian%C4%85-jasi%C5%84sk%C4%85/id1757956398?l=pl',
   youtube: 'https://www.youtube.com/playlist?list=PLs36Pjn2gU5a9qx-5F8HgyqujnfOlC4Pt',
 };
-
-function fetchUrl(url, redirectCount = 0) {
-  return new Promise((resolve, reject) => {
-    if (redirectCount > 5) return reject(new Error('Too many redirects'));
-    const lib = url.startsWith('https') ? https : http;
-    const req = lib.get(url, {
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (compatible; podcast-fetcher/1.0)',
-        'Accept': 'application/rss+xml, application/xml, text/xml, */*',
-      },
-    }, (res) => {
-      if (res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) {
-        return fetchUrl(res.headers.location, redirectCount + 1).then(resolve).catch(reject);
-      }
-      if (res.statusCode !== 200) {
-        return reject(new Error(`HTTP ${res.statusCode} from ${url}`));
-      }
-      let data = '';
-      res.on('data', (chunk) => { data += chunk; });
-      res.on('end', () => resolve(data));
-      res.on('error', reject);
-    });
-    req.on('error', reject);
-    req.setTimeout(10000, () => { req.destroy(); reject(new Error('Request timeout')); });
-  });
-}
 
 function extractText(xml, tag) {
   // CDATA variant
@@ -116,22 +89,31 @@ function parseRSS(xml) {
   return episodes;
 }
 
-async function main() {
-  console.log(`Fetching RSS: ${RSS_URL}`);
-  const xml = await fetchUrl(RSS_URL);
-  console.log(`Fetched ${xml.length} bytes`);
+function main() {
+  if (!INPUT_PATH) {
+    console.error('Usage: node scripts/fetch-episodes.js <path-to-feed.xml>');
+    process.exit(1);
+  }
 
-  if (xml.includes('Host not in allowlist') || xml.trim().startsWith('<')) {
-    if (!xml.trim().startsWith('<')) {
-      throw new Error(`Unexpected response: ${xml.slice(0, 100)}`);
-    }
+  if (!fs.existsSync(INPUT_PATH)) {
+    console.error(`File not found: ${INPUT_PATH}`);
+    process.exit(1);
+  }
+
+  const xml = fs.readFileSync(INPUT_PATH, 'utf8');
+  console.log(`Read ${xml.length} bytes from ${INPUT_PATH}`);
+
+  if (!xml.trim().startsWith('<')) {
+    console.error(`Unexpected content: ${xml.slice(0, 100)}`);
+    process.exit(1);
   }
 
   const episodes = parseRSS(xml);
   console.log(`Parsed ${episodes.length} episodes`);
 
   if (episodes.length === 0) {
-    throw new Error('No episodes found — check the RSS URL');
+    console.error('No episodes found — check the RSS XML');
+    process.exit(1);
   }
 
   const output = {
@@ -143,7 +125,4 @@ async function main() {
   console.log(`Saved to ${OUTPUT_PATH}`);
 }
 
-main().catch((err) => {
-  console.error('FAILED:', err.message);
-  process.exit(1);
-});
+main();
