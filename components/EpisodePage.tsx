@@ -28,43 +28,44 @@ export default function EpisodePage({ episode }: EpisodePageProps) {
         coverImage={episode.coverImage}
         coverImageUrl={episode.coverImageUrl}
         title={episode.title}
+        topSlot={
+          <Link
+            href="/odcinki"
+            className="group inline-flex items-center gap-3 text-xs uppercase tracking-widest text-white/80 hover:text-white transition-colors"
+          >
+            <div className="p-2 border border-white/40 rounded-full group-hover:border-white group-hover:bg-white/10 transition-colors">
+              <ArrowLeft size={14} />
+            </div>
+            <span>Wróć do listy</span>
+          </Link>
+        }
       >
-        <Link
-          href="/odcinki"
-          className="group inline-flex items-center gap-2 text-xs uppercase tracking-widest text-white/80 hover:text-white mb-6 transition-colors"
-        >
-          <div className="p-2 border border-white/40 rounded-full group-hover:border-white transition-colors">
-            <ArrowLeft size={14} />
-          </div>
-          <span>Wróć do listy</span>
-        </Link>
-
-        <span className="inline-block py-1 px-3 border border-white/40 text-[10px] font-bold tracking-[0.2em] uppercase text-white/90 mb-4 rounded-sm">
+        <span className="inline-block py-1 px-3 border border-white/40 text-[10px] font-bold tracking-[0.2em] uppercase text-white/90 mb-5 rounded-sm">
           Sezon {episode.season || 1}
         </span>
-        <h1 className="font-serif text-4xl md:text-7xl text-white mb-6 leading-tight">
+        <h1 className="font-serif text-3xl md:text-5xl lg:text-6xl text-white mb-6 leading-[1.1] max-w-3xl">
           {episode.title}
         </h1>
 
-        <div className="flex flex-wrap items-center gap-6 text-white/80 font-light text-sm">
+        <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-white/75 font-light text-sm">
           {publishDate && (
             <div className="flex items-center gap-2">
-              <Calendar size={16} />
+              <Calendar size={15} />
               <span>{publishDate}</span>
             </div>
           )}
           {duration && (
             <div className="flex items-center gap-2">
-              <Clock size={16} />
+              <Clock size={15} />
               <span>{duration}</span>
             </div>
           )}
         </div>
       </YouTubePreviewHero>
 
-      <div className="container mx-auto px-6 max-w-5xl pt-16">
-        <div className="bg-white p-4 shadow-sm border border-gray-100 rounded-sm mb-12">
-          {spotifyEpisodeId ? (
+      <div className="container mx-auto px-6 max-w-5xl pt-20 md:pt-24">
+        {spotifyEpisodeId && (
+          <div className="bg-white p-4 shadow-sm border border-gray-100 rounded-sm mb-16">
             <iframe
               src={`https://open.spotify.com/embed/episode/${spotifyEpisodeId}?utm_source=generator&theme=0`}
               width="100%"
@@ -74,34 +75,8 @@ export default function EpisodePage({ episode }: EpisodePageProps) {
               title={episode.title}
               className="rounded-sm"
             />
-          ) : (
-            <div className="relative aspect-video w-full bg-black overflow-hidden group">
-              <SanityImage
-                image={episode.coverImage}
-                fallbackUrl={episode.coverImageUrl}
-                alt={episode.title}
-                width={1280}
-                height={720}
-                className="w-full h-full object-cover opacity-80 group-hover:opacity-60 transition-opacity duration-700"
-              />
-              {episode.youtubeUrl && (
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <a
-                    href={episode.youtubeUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-20 h-20 bg-white/90 rounded-full flex items-center justify-center shadow-2xl hover:scale-110 transition-transform duration-300"
-                  >
-                    <Youtube size={32} className="text-esti-dark ml-1" fill="currentColor" />
-                  </a>
-                </div>
-              )}
-              <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/80 to-transparent text-white">
-                <p className="font-sans text-xs uppercase tracking-widest opacity-80">Oglądaj na YouTube</p>
-              </div>
-            </div>
-          )}
-        </div>
+          </div>
+        )}
 
         <div className="flex flex-col lg:flex-row gap-16">
           <div className="lg:w-2/3">

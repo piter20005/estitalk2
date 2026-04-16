@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { ArrowDown } from 'lucide-react';
 import SanityImage from './SanityImage';
 import type { SanityImageField } from '@/types';
 
@@ -10,6 +11,7 @@ interface YouTubePreviewHeroProps {
   coverImageUrl?: string | null;
   title: string;
   previewSeconds?: number;
+  topSlot?: ReactNode;
   children: ReactNode;
 }
 
@@ -73,6 +75,7 @@ export default function YouTubePreviewHero({
   coverImageUrl,
   title,
   previewSeconds = 30,
+  topSlot,
   children,
 }: YouTubePreviewHeroProps) {
   const mountRef = useRef<HTMLDivElement>(null);
@@ -164,7 +167,7 @@ export default function YouTubePreviewHero({
   const videoVisible = showVideo && playerReady;
 
   return (
-    <section className="relative w-full h-[70vh] md:h-[85vh] min-h-[520px] overflow-hidden bg-esti-dark -mt-20">
+    <section className="relative w-full h-screen min-h-[640px] overflow-hidden bg-esti-dark -mt-20">
       {showVideo && (
         <div
           className={`absolute inset-0 pointer-events-none transition-opacity duration-700 ${
@@ -172,7 +175,7 @@ export default function YouTubePreviewHero({
           }`}
           aria-hidden="true"
         >
-          <div className="absolute inset-0 scale-150 origin-center">
+          <div className="absolute inset-0 scale-[1.35] origin-center">
             <div ref={mountRef} className="w-full h-full" />
           </div>
         </div>
@@ -196,18 +199,37 @@ export default function YouTubePreviewHero({
       </div>
 
       <div
-        className="absolute inset-0 bg-gradient-to-t from-esti-dark via-esti-dark/60 to-transparent pointer-events-none"
+        className="absolute inset-0 bg-gradient-to-b from-esti-dark/70 via-transparent to-transparent pointer-events-none"
         aria-hidden="true"
       />
       <div
-        className="absolute inset-0 bg-gradient-to-r from-esti-dark/70 via-transparent to-transparent pointer-events-none"
+        className="absolute inset-0 bg-gradient-to-t from-esti-dark via-esti-dark/80 via-30% to-transparent pointer-events-none"
+        aria-hidden="true"
+      />
+      <div
+        className="absolute inset-0 bg-gradient-to-r from-esti-dark/60 via-transparent to-transparent pointer-events-none"
         aria-hidden="true"
       />
 
-      <div className="relative z-10 container mx-auto px-6 h-full flex flex-col justify-end pb-12 md:pb-16 max-w-5xl">
-        <div className="text-white [text-shadow:_0_2px_24px_rgb(0_0_0_/_50%)] animate-fade-in-up">
+      {topSlot && (
+        <div className="absolute top-24 left-0 right-0 z-10 container mx-auto px-6 max-w-5xl">
+          <div className="text-white [text-shadow:_0_2px_16px_rgb(0_0_0_/_50%)]">
+            {topSlot}
+          </div>
+        </div>
+      )}
+
+      <div className="relative z-10 container mx-auto px-6 h-full flex flex-col justify-end pb-20 md:pb-24 max-w-5xl">
+        <div className="text-white [text-shadow:_0_2px_24px_rgb(0_0_0_/_50%)] animate-fade-in-up max-w-4xl">
           {children}
         </div>
+      </div>
+
+      <div
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 text-white/60 hidden md:block animate-bounce pointer-events-none"
+        aria-hidden="true"
+      >
+        <ArrowDown size={22} />
       </div>
     </section>
   );
