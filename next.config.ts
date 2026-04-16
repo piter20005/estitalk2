@@ -10,6 +10,7 @@ const nextConfig: NextConfig = {
       { protocol: 'https', hostname: 'storage.buzzsprout.com' },
       { protocol: 'https', hostname: '*.libsyn.com' },
       { protocol: 'https', hostname: 'megaphone.imgix.net' },
+      { protocol: 'https', hostname: 'res.cloudinary.com' },
     ],
   },
   experimental: {
