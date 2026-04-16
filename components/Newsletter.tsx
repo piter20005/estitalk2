@@ -3,11 +3,7 @@
 import { useState } from 'react';
 import { Send, Check, AlertCircle, Loader2 } from 'lucide-react';
 
-// Aby aktywować newsletter:
-// 1. Wejdź na https://formspree.io i utwórz darmowe konto
-// 2. Utwórz nowy formularz i skopiuj ID (np. "xyzabcde")
-// 3. Podmień poniższe YOUR_FORM_ID na swoje ID
-const FORMSPREE_ENDPOINT = 'https://formspree.io/f/YOUR_FORM_ID';
+const FORMSPREE_ENDPOINT = 'https://formspree.io/f/xyklelgl';
 
 export default function Newsletter() {
   const [email, setEmail] = useState('');
