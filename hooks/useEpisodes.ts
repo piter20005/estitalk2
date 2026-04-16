@@ -7,62 +7,9 @@ const LINKS = {
   youtube: 'https://www.youtube.com/playlist?list=PLs36Pjn2gU5a9qx-5F8HgyqujnfOlC4Pt'
 };
 
-const FALLBACK_EPISODES: Episode[] = [
-  {
-    id: '05',
-    title: 'Hormony a skóra - co warto wiedzieć?',
-    description: 'Jak hormony wpływają na stan naszej cery? Dr Tatiana Jasińska wyjaśnia zależności między układem endokrynnym a zdrowiem skóry, trądzikiem dorosłych i menopauzą.',
-    duration: '13.12.2023',
-    publishDate: new Date('2023-12-13'),
-    image: 'https://images.unsplash.com/photo-1579684385127-1ef15d508118?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
-    links: LINKS,
-    season: 1
-  },
-  {
-    id: '04',
-    title: 'Rutyna pielęgnacyjna minimalistki',
-    description: 'Mniej znaczy więcej. Jak zbudować skuteczną pielęgnację z zaledwie trzech produktów o wysokiej jakości składnikach. Przewodnik dla zabieganych.',
-    duration: '06.12.2023',
-    publishDate: new Date('2023-12-06'),
-    image: 'https://images.unsplash.com/photo-1556228453-efd6c1ff04f6?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
-    links: LINKS,
-    season: 1
-  },
-  {
-    id: '03',
-    title: 'Psychologia piękna i samoocena',
-    description: 'Dlaczego chcemy wyglądać młodziej? Głęboka rozmowa o tym, jak wygląd wpływa na nasze samopoczucie i pewność siebie w codziennym życiu.',
-    duration: '29.11.2023',
-    publishDate: new Date('2023-11-29'),
-    image: 'https://images.unsplash.com/photo-1516975080664-ed2fc6a32937?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
-    links: LINKS,
-    season: 1
-  },
-  {
-    id: '02',
-    title: 'Medycyna estetyczna: Fakty i Mity',
-    description: 'Botoks, kwas hialuronowy, nici. Co jest bezpieczne, a czego unikać? Rozprawiamy się z najczęstszymi stereotypami krążącymi w internecie.',
-    duration: '22.11.2023',
-    publishDate: new Date('2023-11-22'),
-    image: 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
-    links: LINKS,
-    season: 1
-  },
-  {
-    id: '01',
-    title: 'Sekrety zdrowej skóry zimą',
-    description: 'Jak dbać o barierę hydrolipidową, gdy temperatura spada? Dr Jasińska wyjaśnia kluczowe zasady pielęgnacji w trudnych warunkach atmosferycznych.',
-    duration: '15.11.2023',
-    publishDate: new Date('2023-11-15'),
-    image: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
-    links: LINKS,
-    season: 1
-  }
-];
+const RSS_URL = 'https://anchor.fm/s/f8d844f8/podcast/rss';
 
 // --- Cache ---
-// Modułowy (in-memory): zeruje się dopiero przy pełnym odświeżeniu strony.
-// Dzięki niemu EpisodeList i AllEpisodes korzystają z tego samego fetch.
 let memoryCache: Episode[] | null = null;
 
 const CACHE_KEY = 'estitalk_episodes_v1';
@@ -74,7 +21,6 @@ function readLocalCache(): Episode[] | null {
     if (!raw) return null;
     const { episodes, timestamp } = JSON.parse(raw);
     if (Date.now() - timestamp > CACHE_TTL_MS) return null;
-    // JSON serializuje Date jako string — przywróć obiekty Date
     return (episodes as any[]).map(e => ({ ...e, publishDate: new Date(e.publishDate) }));
   } catch {
     return null;
@@ -87,6 +33,42 @@ function writeLocalCache(episodes: Episode[]) {
   } catch {
     // tryb prywatny lub pełny storage — ignorujemy
   }
+}
+
+// --- Parsery ---
+
+async function fetchFromRSS2Json(): Promise<Episode[]> {
+  const res = await fetch(
+    `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(RSS_URL)}`,
+    { signal: AbortSignal.timeout(7000) }
+  );
+  if (!res.ok) throw new Error(`rss2json HTTP ${res.status}`);
+  const data = await res.json();
+  if (data.status !== 'ok' || !data.items?.length) throw new Error('Empty feed from rss2json');
+
+  const channelImage: string = data.feed?.image ?? '';
+
+  return data.items.map((item: any): Episode => {
+    const pubDate = new Date(item.pubDate);
+    const div = document.createElement('div');
+    div.innerHTML = item.description ?? '';
+    const desc = (div.textContent ?? '').trim();
+
+    return {
+      id: item.guid ?? item.link,
+      title: item.title,
+      description: desc,
+      duration: pubDate.toLocaleDateString('pl-PL'),
+      publishDate: pubDate,
+      image: item.thumbnail || item.enclosure?.link || channelImage,
+      links: {
+        spotify: item.link || LINKS.spotify,
+        apple: LINKS.apple,
+        youtube: LINKS.youtube,
+      },
+      season: parseInt(item['itunes:season'] ?? '1') || 1,
+    };
+  });
 }
 
 function parseXml(xmlText: string): Episode[] {
@@ -130,7 +112,7 @@ function parseXml(xmlText: string): Episode[] {
       description: cleanDescription.trim(),
       duration: pubDate.toLocaleDateString('pl-PL'),
       publishDate: pubDate,
-      image: itunesImage || channelImage || 'https://images.unsplash.com/photo-1579684385127-1ef15d508118?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
+      image: itunesImage || channelImage,
       links: {
         youtube: LINKS.youtube,
         spotify: link || LINKS.spotify,
@@ -141,15 +123,25 @@ function parseXml(xmlText: string): Episode[] {
   });
 }
 
-async function fetchFromRSS(): Promise<Episode[]> {
-  const RSS_URL = 'https://anchor.fm/s/f8d844f8/podcast/rss';
-  const PROXY_URL = `https://api.allorigins.win/raw?url=${encodeURIComponent(RSS_URL)}`;
-  const response = await fetch(PROXY_URL);
-  if (!response.ok) throw new Error('Network response was not ok');
-  const xmlText = await response.text();
-  const episodes = parseXml(xmlText);
-  if (episodes.length === 0) throw new Error('No episodes parsed');
+async function fetchFromProxy(): Promise<Episode[]> {
+  const res = await fetch(
+    `https://api.allorigins.win/raw?url=${encodeURIComponent(RSS_URL)}`,
+    { signal: AbortSignal.timeout(8000) }
+  );
+  if (!res.ok) throw new Error(`allorigins HTTP ${res.status}`);
+  const xml = await res.text();
+  const episodes = parseXml(xml);
+  if (!episodes.length) throw new Error('Empty feed from proxy');
   return episodes;
+}
+
+async function fetchFromRSS(): Promise<Episode[]> {
+  try {
+    return await fetchFromRSS2Json();
+  } catch (e) {
+    console.warn('rss2json failed, falling back to allorigins:', e);
+    return await fetchFromProxy();
+  }
 }
 
 export const useEpisodes = () => {
@@ -158,7 +150,6 @@ export const useEpisodes = () => {
   const [error, setError] = useState(false);
 
   useEffect(() => {
-    // Funkcja odświeżająca dane w tle (bez spinnera)
     const refreshInBackground = async () => {
       try {
         const fresh = await fetchFromRSS();
@@ -170,9 +161,8 @@ export const useEpisodes = () => {
       }
     };
 
-    // 1. Modułowy cache — ta sama sesja (np. home → odcinki)
+    // 1. Modułowy cache — ta sama sesja
     if (memoryCache) {
-      // Dane już w state (initializer wyżej), odśwież w tle
       refreshInBackground();
       return;
     }
@@ -195,9 +185,9 @@ export const useEpisodes = () => {
         writeLocalCache(fresh);
         setEpisodes(fresh);
       } catch (err) {
-        console.error('Failed to fetch episodes:', err);
+        console.error('Failed to fetch episodes from all sources:', err);
         setError(true);
-        setEpisodes(FALLBACK_EPISODES);
+        setEpisodes([]);
       } finally {
         setLoading(false);
       }

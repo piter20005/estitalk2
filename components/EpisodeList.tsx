@@ -10,7 +10,7 @@ interface EpisodeListProps {
 }
 
 const EpisodeList: React.FC<EpisodeListProps> = ({ onViewAll, onEpisodeClick }) => {
-  const { episodes, loading } = useEpisodes();
+  const { episodes, loading, error } = useEpisodes();
   
   // Get only latest 3 episodes
   const latestEpisodes = episodes.slice(0, 3);
@@ -41,6 +41,19 @@ const EpisodeList: React.FC<EpisodeListProps> = ({ onViewAll, onEpisodeClick }) 
         {loading && (
             <div className="flex justify-center items-center py-20">
                 <Loader2 className="animate-spin text-esti-taupe" size={40} />
+            </div>
+        )}
+
+        {!loading && error && episodes.length === 0 && (
+            <div className="text-center py-16">
+                <p className="font-serif text-xl text-esti-dark mb-2">Nie udało się załadować odcinków</p>
+                <p className="text-esti-taupe text-sm mb-6 font-light">Sprawdź połączenie z internetem i spróbuj ponownie.</p>
+                <button
+                  onClick={() => window.location.reload()}
+                  className="text-xs uppercase tracking-widest border border-esti-dark px-6 py-3 hover:bg-esti-dark hover:text-white transition-all"
+                >
+                  Odśwież stronę
+                </button>
             </div>
         )}
 

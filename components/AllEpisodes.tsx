@@ -137,11 +137,22 @@ const AllEpisodes: React.FC<AllEpisodesProps> = ({ onBack, onEpisodeClick, pendi
            <div className="flex justify-center items-center py-32">
               <Loader2 className="animate-spin text-esti-taupe" size={48} />
            </div>
+        ) : error && episodes.length === 0 ? (
+           <div className="text-center py-24">
+              <p className="font-serif text-2xl text-esti-dark mb-2">Nie udało się załadować odcinków</p>
+              <p className="text-esti-taupe font-light mb-8">Sprawdź połączenie z internetem i spróbuj ponownie.</p>
+              <button
+                onClick={() => window.location.reload()}
+                className="text-xs uppercase tracking-widest border border-esti-dark px-8 py-4 hover:bg-esti-dark hover:text-white transition-all"
+              >
+                Odśwież stronę
+              </button>
+           </div>
         ) : filteredEpisodes.length === 0 ? (
            <div className="text-center py-20">
               <p className="font-serif text-2xl text-esti-dark mb-2">Brak wyników</p>
               <p className="text-gray-500">Spróbuj zmienić kryteria wyszukiwania.</p>
-              <button 
+              <button
                 onClick={() => {setSearchQuery(''); setSelectedSeason('all');}}
                 className="mt-6 text-sm underline text-esti-taupe hover:text-esti-dark"
               >
