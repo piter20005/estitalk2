@@ -1,30 +1,25 @@
-import React from 'react';
+import Link from 'next/link';
+import Image from 'next/image';
 import { Play, ArrowDown, ArrowRight } from 'lucide-react';
 
-interface HeroProps {
-  onNavigate: (view: 'home' | 'episodes' | 'doctors') => void;
-}
-
-const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
+export default function Hero() {
   return (
     <section className="relative min-h-screen flex items-center pt-20 overflow-hidden">
       <div className="container mx-auto px-6 relative z-10">
         <div className="flex flex-col lg:flex-row items-end lg:items-center gap-12">
-
-          {/* Text Content */}
           <div className="lg:w-1/2 flex flex-col gap-6 animate-fade-in-up">
             <div className="flex flex-wrap items-center gap-3 mb-2">
               <span className="bg-esti-beige/30 px-4 py-1 rounded-full text-xs font-bold tracking-widest uppercase text-esti-dark inline-block">
-                Nowy Sezon
+                Nowy sezon
               </span>
-              <button
-                onClick={() => onNavigate('doctors')}
+              <Link
+                href="/for-doctors"
                 className="group flex items-center gap-2 bg-esti-dark/5 hover:bg-esti-dark border border-esti-dark/20 hover:border-esti-dark px-4 py-1 rounded-full text-xs font-bold tracking-widest uppercase text-esti-dark hover:text-white transition-all duration-300"
               >
                 <Play size={10} fill="currentColor" />
                 <span>For Doctors</span>
                 <ArrowRight size={10} className="group-hover:translate-x-0.5 transition-transform" />
-              </button>
+              </Link>
             </div>
             <h1 className="font-serif text-6xl md:text-8xl leading-[0.9] text-esti-dark">
               Rozmowy <br />
@@ -36,30 +31,27 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
             </p>
 
             <div className="flex flex-col sm:flex-row items-start gap-4 mt-8">
-              {/* Primary CTA */}
-              <a
-                href="#listen"
+              <Link
+                href="/#listen"
                 className="group flex items-center gap-3 bg-esti-dark text-white px-8 py-4 rounded-sm hover:bg-esti-dark/80 transition-all duration-300"
               >
                 <Play size={16} fill="currentColor" className="group-hover:scale-110 transition-transform" />
                 <span className="uppercase tracking-widest text-sm font-medium">Posłuchaj</span>
-              </a>
-              {/* Secondary link */}
-              <a
-                href="#episodes"
+              </Link>
+              <Link
+                href="/odcinki"
                 className="group flex items-center gap-2 py-4 text-sm uppercase tracking-widest font-medium text-esti-taupe hover:text-esti-dark transition-colors"
               >
                 <span>Zobacz odcinki</span>
                 <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
-              </a>
+              </Link>
             </div>
           </div>
 
-          {/* Visual Content */}
           <div className="lg:w-1/2 relative mt-12 lg:mt-0">
             <div className="relative aspect-[4/5] md:aspect-[3/4] lg:w-[80%] ml-auto">
-              {/* Main Image */}
               <div className="w-full h-full overflow-hidden rounded-2xl relative z-20 shadow-2xl">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src="https://res.cloudinary.com/dgcg6hz1d/image/upload/q_auto/f_auto/v1776275446/IMG_1160_drehmt.jpg"
                   alt="Dr Tatiana Jasińska"
@@ -69,25 +61,22 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
                 <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent pointer-events-none" />
               </div>
 
-              {/* Decorative Elements */}
               <div className="absolute -bottom-8 -left-8 w-48 h-48 bg-esti-beige rounded-full z-10 mix-blend-multiply opacity-80 blur-2xl" />
               <div className="absolute top-20 -right-8 w-64 h-64 border border-esti-taupe/20 rounded-full z-0" />
 
-              {/* Floating Badge — safe on all screen sizes */}
               <div className="absolute bottom-8 left-4 lg:-left-6 lg:bottom-12 z-30 bg-white p-5 shadow-xl max-w-[180px] lg:max-w-[200px]">
-                <p className="font-serif text-xl lg:text-2xl italic text-esti-dark leading-snug">"Całe miasto słucha Esti Talk."</p>
+                <p className="font-serif text-xl lg:text-2xl italic text-esti-dark leading-snug">
+                  &ldquo;Całe miasto słucha Esti Talk.&rdquo;
+                </p>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Scroll Indicator */}
       <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce text-esti-taupe hidden md:block">
         <ArrowDown size={24} />
       </div>
     </section>
   );
-};
-
-export default Hero;
+}

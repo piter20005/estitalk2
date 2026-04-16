@@ -12,6 +12,24 @@ dist
 dist-ssr
 *.local
 
+# Next.js
+.next/
+out/
+next-env.d.ts.bak
+tsconfig.tsbuildinfo
+
+# Env
+.env
+.env*.local
+
+# Sanity
+.sanity/
+sanity/types.d.ts
+
+# Podcast downloads and local state
+downloads/
+data/podcast-state.json
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

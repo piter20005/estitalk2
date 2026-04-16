@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+'use client';
+
+import { useState } from 'react';
 import { Send, Check, AlertCircle, Loader2 } from 'lucide-react';
 
 // Aby aktywować newsletter:
@@ -7,7 +9,7 @@ import { Send, Check, AlertCircle, Loader2 } from 'lucide-react';
 // 3. Podmień poniższe YOUR_FORM_ID na swoje ID
 const FORMSPREE_ENDPOINT = 'https://formspree.io/f/YOUR_FORM_ID';
 
-const Newsletter: React.FC = () => {
+export default function Newsletter() {
   const [email, setEmail] = useState('');
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
 
@@ -40,9 +42,9 @@ const Newsletter: React.FC = () => {
 
       <div className="container mx-auto px-6 relative z-10">
         <div className="flex flex-col lg:flex-row items-center gap-16">
-
           <div className="w-full lg:w-1/2">
             <div className="relative rounded-sm overflow-hidden shadow-xl aspect-[4/3]">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src="/images/studio.png"
                 alt="Studio Esti Talk"
@@ -60,8 +62,8 @@ const Newsletter: React.FC = () => {
             </h2>
 
             <p className="font-sans text-lg text-esti-dark/80 mb-12 leading-relaxed">
-              Dołącz do naszej społeczności i bądź na bieżąco! Otrzymuj powiadomienia o nowych odcinkach,
-              ciekawostki ze świata dermatologii oraz ekskluzywne porady od Dr Tatiany Jasińskiej.
+              Dołącz do naszej społeczności i bądź na bieżąco! Otrzymuj powiadomienia o nowych odcinkach, ciekawostki
+              ze świata dermatologii oraz ekskluzywne porady od Dr Tatiany Jasińskiej.
             </p>
 
             <form onSubmit={handleSubmit} className="max-w-md mx-auto lg:mx-0">
@@ -88,9 +90,7 @@ const Newsletter: React.FC = () => {
                       className="absolute right-0 top-1/2 -translate-y-1/2 text-esti-dark hover:text-white disabled:opacity-50 transition-colors p-2"
                       aria-label="Zapisz się"
                     >
-                      {status === 'loading'
-                        ? <Loader2 size={22} className="animate-spin" />
-                        : <Send size={22} strokeWidth={1.5} />}
+                      {status === 'loading' ? <Loader2 size={22} className="animate-spin" /> : <Send size={22} strokeWidth={1.5} />}
                     </button>
                   </div>
                   {status === 'error' && (
@@ -111,6 +111,4 @@ const Newsletter: React.FC = () => {
       </div>
     </section>
   );
-};
-
-export default Newsletter;
+}
