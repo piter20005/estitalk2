@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { ArrowLeft, Calendar, Share2, Music, Youtube, Podcast } from 'lucide-react';
+import { ArrowLeft, Calendar, Share2, Music, Youtube, Podcast, ExternalLink } from 'lucide-react';
 import { Episode } from '../types';
 
 interface EpisodePageProps {
@@ -100,6 +100,36 @@ const EpisodePage: React.FC<EpisodePageProps> = ({ episode, onBack }) => {
             <div className="prose prose-stone max-w-none font-light leading-relaxed text-esti-taupe">
               <p className="whitespace-pre-line text-lg">{episode.description}</p>
             </div>
+
+            {/* Notes */}
+            {episode.notes && (
+              <p className="mt-8 text-sm text-esti-taupe/70 italic border-l-2 border-esti-taupe/20 pl-4">
+                {episode.notes}
+              </p>
+            )}
+
+            {/* Resources */}
+            {episode.resources && episode.resources.length > 0 && (
+              <div className="mt-12">
+                <h3 className="font-serif text-2xl mb-6 text-esti-dark">Linki i zasoby</h3>
+                <ul className="space-y-3">
+                  {episode.resources.map(r => (
+                    <li key={r.url}>
+                      <a
+                        href={r.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-3 text-esti-taupe hover:text-esti-dark transition-colors group"
+                      >
+                        <span className="block w-4 h-px bg-esti-taupe/40 group-hover:w-6 group-hover:bg-esti-dark transition-all shrink-0" />
+                        <span>{r.label}</span>
+                        <ExternalLink size={13} className="opacity-40 group-hover:opacity-80 shrink-0" />
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </div>
 
           {/* Sidebar */}
@@ -147,6 +177,31 @@ const EpisodePage: React.FC<EpisodePageProps> = ({ episode, onBack }) => {
                   </a>
                 </div>
               </div>
+
+              {/* Guest */}
+              {episode.guest && (
+                <div className="bg-white p-6 border border-gray-100 shadow-sm rounded-sm">
+                  <h4 className="font-serif text-lg mb-2 text-esti-dark">Gość odcinka</h4>
+                  <p className="text-esti-taupe font-light">{episode.guest}</p>
+                </div>
+              )}
+
+              {/* Topics */}
+              {episode.topics && episode.topics.length > 0 && (
+                <div className="bg-white p-6 border border-gray-100 shadow-sm rounded-sm">
+                  <h4 className="font-serif text-lg mb-3 text-esti-dark">Tematy</h4>
+                  <div className="flex flex-wrap gap-2">
+                    {episode.topics.map(t => (
+                      <span
+                        key={t}
+                        className="text-xs border border-esti-taupe/30 px-3 py-1 text-esti-taupe uppercase tracking-widest rounded-sm"
+                      >
+                        {t}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               {/* Share */}
               <div className="flex items-center justify-between p-6 bg-esti-beige/20 rounded-sm">

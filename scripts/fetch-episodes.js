@@ -2,11 +2,15 @@
 // Expects a pre-downloaded XML file path as the first CLI argument.
 // Usage: node scripts/fetch-episodes.js /tmp/feed.xml
 
-const fs = require('fs');
-const path = require('path');
+import { existsSync, readFileSync, writeFileSync } from 'fs';
+import { join, dirname } from 'path';
+import { fileURLToPath } from 'url';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const INPUT_PATH = process.argv[2];
-const OUTPUT_PATH = path.join(__dirname, '..', 'public', 'episodes.json');
+const OUTPUT_PATH = join(__dirname, '..', 'public', 'episodes.json');
+const META_PATH = join(__dirname, '..', 'data', 'episode-meta.json');
 
 const LINKS = {
   spotify: 'https://open.spotify.com/show/4AV3JfVxwT8KfqeVHUYoU0',
@@ -42,6 +46,19 @@ function stripHtml(html) {
     .replace(/&nbsp;/g, ' ')
     .replace(/\s+/g, ' ')
     .trim();
+}
+
+function loadMeta() {
+  if (!existsSync(META_PATH)) return {};
+  try {
+    const raw = JSON.parse(readFileSync(META_PATH, 'utf8'));
+    // Strip comment/example keys used for documentation
+    const { __comment: _c, __example: _e, ...entries } = raw;
+    return entries;
+  } catch (e) {
+    console.warn(`Cannot parse episode-meta.json: ${e.message}`);
+    return {};
+  }
 }
 
 function parseRSS(xml) {
@@ -89,18 +106,36 @@ function parseRSS(xml) {
   return episodes;
 }
 
+function mergeWithMeta(episodes, meta) {
+  return episodes.map(ep => {
+    const extra = meta[ep.id] ?? {};
+    return {
+      ...ep,
+      guest:     extra.guest     ?? null,
+      topics:    extra.topics    ?? [],
+      resources: extra.resources ?? [],
+      notes:     extra.notes     ?? null,
+      links: {
+        ...ep.links,
+        // Override with per-episode YouTube URL when provided
+        youtube: extra.youtubeUrl ?? ep.links.youtube,
+      },
+    };
+  });
+}
+
 function main() {
   if (!INPUT_PATH) {
     console.error('Usage: node scripts/fetch-episodes.js <path-to-feed.xml>');
     process.exit(1);
   }
 
-  if (!fs.existsSync(INPUT_PATH)) {
+  if (!existsSync(INPUT_PATH)) {
     console.error(`File not found: ${INPUT_PATH}`);
     process.exit(1);
   }
 
-  const xml = fs.readFileSync(INPUT_PATH, 'utf8');
+  const xml = readFileSync(INPUT_PATH, 'utf8');
   console.log(`Read ${xml.length} bytes from ${INPUT_PATH}`);
 
   if (!xml.trim().startsWith('<')) {
@@ -116,12 +151,34 @@ function main() {
     process.exit(1);
   }
 
+  // Guard: refuse to overwrite if new count drops >20% vs stored (partial feed)
+  let existingCount = 0;
+  if (existsSync(OUTPUT_PATH)) {
+    try {
+      const existing = JSON.parse(readFileSync(OUTPUT_PATH, 'utf8'));
+      existingCount = existing.episodes?.length ?? 0;
+    } catch { /* first run — ignore */ }
+  }
+  if (existingCount > 0 && episodes.length < existingCount * 0.8) {
+    console.error(
+      `Parsed only ${episodes.length} episodes but ${existingCount} were stored. ` +
+      `Refusing to overwrite — possible partial feed.`
+    );
+    process.exit(1);
+  }
+
+  const meta = loadMeta();
+  const metaKeys = Object.keys(meta);
+  console.log(`Loaded ${metaKeys.length} episode-meta entries`);
+
+  const enriched = mergeWithMeta(episodes, meta);
+
   const output = {
-    episodes,
+    episodes: enriched,
     updatedAt: new Date().toISOString(),
   };
 
-  fs.writeFileSync(OUTPUT_PATH, JSON.stringify(output, null, 2), 'utf8');
+  writeFileSync(OUTPUT_PATH, JSON.stringify(output, null, 2), 'utf8');
   console.log(`Saved to ${OUTPUT_PATH}`);
 }
 

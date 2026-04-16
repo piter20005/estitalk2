@@ -2,8 +2,12 @@ name: Fetch Episodes
 
 on:
   schedule:
-    - cron: '0 */2 * * *'   # co 2 godziny
-  workflow_dispatch:          # ręczne uruchomienie z zakładki Actions
+    - cron: '*/15 * * * *'    # co 15 minut
+  workflow_dispatch:            # ręczne uruchomienie z zakładki Actions
+  push:
+    branches: [main]
+    paths:
+      - 'data/episode-meta.json'  # odbuduj episodes.json przy zmianie metadanych
 
 permissions:
   contents: write
@@ -23,13 +27,18 @@ jobs:
 
       - name: Fetch RSS feed
         run: |
+          RSS_URL="https://anchor.fm/s/f8d844f8/podcast/rss"
+
           curl -f -sL \
+            --retry 3 --retry-delay 5 \
             --user-agent "Podcasts/1450.1.1 CFNetwork/1390 Darwin/22.0.0" \
             --header "Accept: application/rss+xml, application/xml, text/xml, */*" \
-            --max-time 20 \
-            "https://anchor.fm/s/f8d844f8/podcast/rss" \
+            --max-time 30 \
+            "$RSS_URL" \
             -o /tmp/feed.xml
+
           echo "Downloaded $(wc -c < /tmp/feed.xml) bytes"
+          head -c 5 /tmp/feed.xml | grep -q '<' || { echo "::error::Response is not XML"; exit 1; }
 
       - name: Parse and save episodes
         run: node scripts/fetch-episodes.js /tmp/feed.xml

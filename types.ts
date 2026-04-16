@@ -1,5 +1,10 @@
 import React from 'react';
 
+export interface EpisodeResource {
+  label: string;
+  url: string;
+}
+
 export interface Episode {
   id: string;
   title: string;
@@ -14,6 +19,9 @@ export interface Episode {
   };
   guest?: string;
   season?: number;
+  topics?: string[];
+  resources?: EpisodeResource[];
+  notes?: string;
 }
 
 export interface SocialLink {
