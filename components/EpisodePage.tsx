@@ -21,6 +21,17 @@ export default function EpisodePage({ episode }: EpisodePageProps) {
   const publishDate = formatPublishDate(episode.publishDate);
   const duration = formatDurationSeconds(episode.duration);
 
+  const paragraphs = (episode.description ?? '')
+    .split(/\n{2,}/)
+    .map((p) => p.trim())
+    .filter(Boolean);
+  const [leadParagraph, ...bodyParagraphs] = paragraphs;
+
+  const hasGuests = Boolean(episode.guests && episode.guests.length > 0);
+  const hasTopics = Boolean(episode.topics && episode.topics.length > 0);
+  const hasResources = Boolean(episode.resources && episode.resources.length > 0);
+  const hasPlatforms = Boolean(episode.spotifyUrl || episode.appleUrl || episode.youtubeUrl);
+
   return (
     <div className="min-h-screen bg-esti-light pb-20 animate-fade-in-up">
       <YouTubePreviewHero
@@ -63,9 +74,9 @@ export default function EpisodePage({ episode }: EpisodePageProps) {
         </div>
       </YouTubePreviewHero>
 
-      <div className="container mx-auto px-6 max-w-5xl pt-20 md:pt-24">
+      <div className="container mx-auto px-6 max-w-6xl pt-16 md:pt-20">
         {spotifyEpisodeId && (
-          <div className="bg-white p-4 shadow-sm border border-gray-100 rounded-sm mb-16">
+          <div className="bg-white p-4 shadow-sm border border-gray-100 rounded-sm mb-14">
             <iframe
               src={`https://open.spotify.com/embed/episode/${spotifyEpisodeId}?utm_source=generator&theme=0`}
               width="100%"
@@ -78,139 +89,153 @@ export default function EpisodePage({ episode }: EpisodePageProps) {
           </div>
         )}
 
-        <div className="flex flex-col lg:flex-row gap-16">
-          <div className="lg:w-2/3">
-            <h3 className="font-serif text-2xl mb-6 text-esti-dark">O odcinku</h3>
-            <div className="prose prose-stone max-w-none font-light leading-relaxed text-esti-taupe">
-              <p className="whitespace-pre-line text-lg">{episode.description}</p>
-            </div>
+        <section>
+          <span className="block w-12 h-px bg-esti-gold mb-5" aria-hidden="true" />
+          <h2 className="font-serif text-3xl md:text-4xl text-esti-dark mb-8">O odcinku</h2>
+
+          <article className="max-w-[68ch]">
+            {leadParagraph && (
+              <p className="font-sans text-xl md:text-2xl font-light leading-relaxed text-esti-dark mb-6">
+                {leadParagraph}
+              </p>
+            )}
+            {bodyParagraphs.map((p, i) => (
+              <p
+                key={i}
+                className="font-sans font-light text-base md:text-lg leading-relaxed text-esti-taupe mb-5"
+              >
+                {p}
+              </p>
+            ))}
 
             {Boolean(episode.notes) && (
-              <div className="mt-8 text-sm text-esti-taupe/80 italic border-l-2 border-esti-taupe/20 pl-4 space-y-2">
+              <div className="mt-10 pl-5 border-l-2 border-esti-gold/60 text-esti-taupe/80 italic space-y-3 text-sm">
                 <PortableText value={episode.notes as never} />
               </div>
             )}
+          </article>
+        </section>
 
-            {episode.resources && episode.resources.length > 0 && (
-              <div className="mt-12">
-                <h3 className="font-serif text-2xl mb-6 text-esti-dark">Linki i zasoby</h3>
-                <ul className="space-y-3">
-                  {episode.resources.map((r) => (
-                    <li key={r.url}>
-                      <a
-                        href={r.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-3 text-esti-taupe hover:text-esti-dark transition-colors group"
-                      >
-                        <span className="block w-4 h-px bg-esti-taupe/40 group-hover:w-6 group-hover:bg-esti-dark transition-all shrink-0" />
-                        <span>{r.label}</span>
-                        <ExternalLink size={13} className="opacity-40 group-hover:opacity-80 shrink-0" />
-                      </a>
-                    </li>
+        {hasResources && (
+          <section className="mt-14 pt-10 border-t border-esti-taupe/15">
+            <h3 className="font-serif text-sm text-esti-taupe uppercase tracking-[0.2em] mb-5">
+              Linki i zasoby
+            </h3>
+            <div className="flex flex-wrap gap-3">
+              {episode.resources!.map((r) => (
+                <a
+                  key={r.url}
+                  href={r.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-4 py-2 border border-esti-taupe/25 rounded-sm text-sm text-esti-taupe hover:bg-esti-dark hover:text-white hover:border-esti-dark transition-colors"
+                >
+                  <span>{r.label}</span>
+                  <ExternalLink size={13} className="opacity-60" />
+                </a>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {hasGuests && (
+          <section className="mt-16 pt-12 border-t border-esti-taupe/15">
+            <h2 className="font-serif text-3xl text-esti-dark mb-8">Goście odcinka</h2>
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {episode.guests!.map((g) => (
+                <Link
+                  key={g._id}
+                  href={`/goscie/${g.slug}`}
+                  className="flex items-center gap-4 bg-white border border-gray-100 rounded-sm p-5 hover:shadow-md hover:border-esti-taupe/40 transition-all group"
+                >
+                  <div className="w-16 h-16 overflow-hidden rounded-full bg-esti-beige/30 shrink-0">
+                    <SanityImage
+                      image={g.photo}
+                      alt={g.name}
+                      width={128}
+                      height={128}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                    />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="font-medium text-esti-dark group-hover:text-esti-taupe transition-colors">
+                      {g.name}
+                    </p>
+                    {g.profession && (
+                      <p className="text-xs text-esti-taupe mt-1">{g.profession}</p>
+                    )}
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {(hasTopics || hasPlatforms) && (
+          <section className="mt-16 pt-12 border-t border-esti-taupe/15 grid gap-12 md:grid-cols-2">
+            {hasTopics && (
+              <div>
+                <h3 className="font-serif text-sm text-esti-taupe uppercase tracking-[0.2em] mb-5">
+                  Tematy
+                </h3>
+                <div className="flex flex-wrap gap-2">
+                  {episode.topics!.map((t) => (
+                    <Link
+                      key={t._id}
+                      href={`/tematy/${t.slug}`}
+                      className="text-xs border border-esti-taupe/30 px-3 py-1 text-esti-taupe hover:bg-esti-dark hover:text-white hover:border-esti-dark uppercase tracking-widest rounded-sm transition-colors"
+                    >
+                      {t.name}
+                    </Link>
                   ))}
-                </ul>
+                </div>
               </div>
             )}
-          </div>
 
-          <div className="lg:w-1/3">
-            <div className="sticky top-32 space-y-8">
-              <div className="bg-white p-8 border border-gray-100 shadow-sm rounded-sm">
-                <h4 className="font-serif text-xl mb-6 text-esti-dark">Posłuchaj odcinka</h4>
-                <div className="flex flex-col gap-4">
+            {hasPlatforms && (
+              <div>
+                <h3 className="font-serif text-sm text-esti-taupe uppercase tracking-[0.2em] mb-5">
+                  Posłuchaj odcinka
+                </h3>
+                <div className="flex flex-wrap gap-3">
                   {episode.spotifyUrl && (
                     <a
                       href={episode.spotifyUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-4 p-4 border border-gray-200 hover:border-[#1DB954] hover:bg-[#1DB954]/5 transition-all group rounded-sm"
+                      className="inline-flex items-center gap-2 px-4 py-2.5 border border-esti-taupe/25 rounded-sm text-sm font-medium text-esti-dark hover:border-[#1DB954] hover:bg-[#1DB954]/5 transition-colors"
                     >
-                      <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center group-hover:bg-[#1DB954] group-hover:text-white transition-colors">
-                        <Music size={20} />
-                      </div>
-                      <span className="font-medium text-esti-dark">Spotify</span>
+                      <Music size={16} />
+                      <span>Spotify</span>
                     </a>
                   )}
-
                   {episode.appleUrl && (
                     <a
                       href={episode.appleUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-4 p-4 border border-gray-200 hover:border-[#872EC4] hover:bg-[#872EC4]/5 transition-all group rounded-sm"
+                      className="inline-flex items-center gap-2 px-4 py-2.5 border border-esti-taupe/25 rounded-sm text-sm font-medium text-esti-dark hover:border-[#872EC4] hover:bg-[#872EC4]/5 transition-colors"
                     >
-                      <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center group-hover:bg-[#872EC4] group-hover:text-white transition-colors">
-                        <Podcast size={20} />
-                      </div>
-                      <span className="font-medium text-esti-dark">Apple Podcasts</span>
+                      <Podcast size={16} />
+                      <span>Apple Podcasts</span>
                     </a>
                   )}
-
                   {episode.youtubeUrl && (
                     <a
                       href={episode.youtubeUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-4 p-4 border border-gray-200 hover:border-[#FF0000] hover:bg-[#FF0000]/5 transition-all group rounded-sm"
+                      className="inline-flex items-center gap-2 px-4 py-2.5 border border-esti-taupe/25 rounded-sm text-sm font-medium text-esti-dark hover:border-[#FF0000] hover:bg-[#FF0000]/5 transition-colors"
                     >
-                      <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center group-hover:bg-[#FF0000] group-hover:text-white transition-colors">
-                        <Youtube size={20} />
-                      </div>
-                      <span className="font-medium text-esti-dark">YouTube</span>
+                      <Youtube size={16} />
+                      <span>YouTube</span>
                     </a>
                   )}
                 </div>
               </div>
-
-              {episode.guests && episode.guests.length > 0 && (
-                <div className="bg-white p-6 border border-gray-100 shadow-sm rounded-sm">
-                  <h4 className="font-serif text-lg mb-4 text-esti-dark">Goście odcinka</h4>
-                  <ul className="space-y-4">
-                    {episode.guests.map((g) => (
-                      <li key={g._id}>
-                        <Link href={`/goscie/${g.slug}`} className="flex items-center gap-3 group">
-                          <div className="w-12 h-12 overflow-hidden rounded-full bg-esti-beige/30 shrink-0">
-                            <SanityImage
-                              image={g.photo}
-                              alt={g.name}
-                              width={96}
-                              height={96}
-                              className="w-full h-full object-cover group-hover:scale-105 transition-transform"
-                            />
-                          </div>
-                          <div className="min-w-0">
-                            <p className="font-medium text-esti-dark group-hover:text-esti-taupe transition-colors truncate">
-                              {g.name}
-                            </p>
-                            {g.profession && <p className="text-xs text-esti-taupe truncate">{g.profession}</p>}
-                          </div>
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-
-              {episode.topics && episode.topics.length > 0 && (
-                <div className="bg-white p-6 border border-gray-100 shadow-sm rounded-sm">
-                  <h4 className="font-serif text-lg mb-3 text-esti-dark">Tematy</h4>
-                  <div className="flex flex-wrap gap-2">
-                    {episode.topics.map((t) => (
-                      <Link
-                        key={t._id}
-                        href={`/tematy/${t.slug}`}
-                        className="text-xs border border-esti-taupe/30 px-3 py-1 text-esti-taupe hover:bg-esti-dark hover:text-white hover:border-esti-dark uppercase tracking-widest rounded-sm transition-colors"
-                      >
-                        {t.name}
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
+            )}
+          </section>
+        )}
       </div>
     </div>
   );
