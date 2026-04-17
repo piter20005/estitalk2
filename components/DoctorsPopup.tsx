@@ -6,7 +6,7 @@ import { X, ArrowRight, Lock } from 'lucide-react';
 
 const STORAGE_KEY = 'doctors_popup_dismissed_at';
 const DISMISS_DAYS = 7;
-const DELAY_MS = 25_000;
+const DELAY_MS = 10_000;
 
 export default function DoctorsPopup() {
   const [visible, setVisible] = useState(false);

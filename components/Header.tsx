@@ -11,8 +11,9 @@ const NAV_LINKS = [
   { name: 'Odcinki', href: '/odcinki' },
   { name: 'Goście', href: '/goscie' },
   { name: 'Tematy', href: '/tematy' },
-  { name: 'For Doctors', href: '/for-doctors' },
 ] as const;
+
+const DOCTORS_LINK = { name: 'For Doctors', href: '/for-doctors' } as const;
 
 const LOGO_WHITE =
   'https://res.cloudinary.com/dgcg6hz1d/image/upload/q_auto/f_auto/v1776376537/EstiTalk_nowe_logo_bia%C5%82e_4x_fdg62c.png';
@@ -79,6 +80,16 @@ export default function Header() {
             </Link>
           ))}
           <Link
+            href={DOCTORS_LINK.href}
+            className={`px-5 py-2 rounded-full text-xs uppercase tracking-widest font-bold transition-all duration-300 shadow-sm ${
+              overHero
+                ? 'bg-white text-esti-dark hover:bg-esti-beige'
+                : 'bg-esti-dark text-white hover:bg-esti-taupe'
+            }`}
+          >
+            {DOCTORS_LINK.name}
+          </Link>
+          <Link
             href="/#newsletter"
             className={`px-6 py-2 border rounded-full text-xs uppercase tracking-widest transition-all duration-300 ${
               overHero
@@ -116,6 +127,13 @@ export default function Header() {
             {link.name}
           </Link>
         ))}
+        <Link
+          href={DOCTORS_LINK.href}
+          className="mt-2 px-6 py-3 rounded-full bg-esti-dark text-white text-sm uppercase tracking-widest font-bold"
+          onClick={() => setMobileMenuOpen(false)}
+        >
+          {DOCTORS_LINK.name}
+        </Link>
       </div>
     </header>
   );
