@@ -6,6 +6,7 @@ import Philosophy from '@/components/Philosophy';
 import EpisodeList from '@/components/EpisodeList';
 import GuestsSlider from '@/components/GuestsSlider';
 import DoctorsPromo from '@/components/DoctorsPromo';
+import DoctorsPopup from '@/components/DoctorsPopup';
 import Testimonials from '@/components/Testimonials';
 import Newsletter from '@/components/Newsletter';
 import Platforms from '@/components/Platforms';
@@ -40,6 +41,7 @@ export default async function HomePage() {
       <Testimonials />
       <Newsletter />
       <Platforms />
+      <DoctorsPopup />
     </>
   );
 }
