@@ -10,6 +10,7 @@ import {
   extractSpotifyEpisodeId,
   extractYouTubeId,
 } from '@/types';
+import { jsonLdScript, podcastEpisodeLd } from '@/lib/jsonLd';
 
 interface EpisodePageProps {
   episode: Episode;
@@ -34,6 +35,10 @@ export default function EpisodePage({ episode }: EpisodePageProps) {
 
   return (
     <div className="min-h-screen bg-esti-light pb-20 animate-fade-in-up">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(podcastEpisodeLd(episode)) }}
+      />
       <YouTubePreviewHero
         videoId={youtubeVideoId}
         coverImage={episode.coverImage}
