@@ -17,7 +17,8 @@ interface EpisodePageProps {
 
 export default function EpisodePage({ episode }: EpisodePageProps) {
   const spotifyEpisodeId = extractSpotifyEpisodeId(episode.spotifyUrl);
-  const youtubeVideoId = extractYouTubeId(episode.youtubeUrl);
+  const youtubeVideoId =
+    extractYouTubeId(episode.youtubeEpisodeUrl) ?? extractYouTubeId(episode.youtubeUrl);
   const publishDate = formatPublishDate(episode.publishDate);
   const duration = formatDurationSeconds(episode.duration);
 

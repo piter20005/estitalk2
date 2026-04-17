@@ -38,6 +38,7 @@ export interface Episode {
   spotifyUrl?: string | null;
   appleUrl?: string | null;
   youtubeUrl?: string | null;
+  youtubeEpisodeUrl?: string | null;
   season: number | null;
   episodeNumber: number | null;
   isFeatured: boolean | null;

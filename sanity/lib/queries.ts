@@ -15,6 +15,7 @@ const EPISODE_CORE_FIELDS = /* groq */ `
   spotifyUrl,
   appleUrl,
   youtubeUrl,
+  youtubeEpisodeUrl,
   season,
   episodeNumber,
   isFeatured,

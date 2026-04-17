@@ -80,9 +80,18 @@ export const episodeType = defineType({
     }),
     defineField({
       name: 'youtubeUrl',
-      title: 'YouTube URL',
+      title: 'YouTube URL (playlista — z RSS)',
       type: 'url',
       fieldset: 'links',
+      description: 'Nadpisywane przez sync RSS — zwykle link do playlisty kanału.',
+    }),
+    defineField({
+      name: 'youtubeEpisodeUrl',
+      title: 'YouTube — link do odcinka (ręczny)',
+      type: 'url',
+      fieldset: 'links',
+      description:
+        'Pełny URL do konkretnego filmu na YouTube (np. https://youtu.be/... lub https://www.youtube.com/watch?v=...). Używany do 30-sekundowego podglądu w hero. Nie jest nadpisywany przez sync.',
     }),
     defineField({ name: 'season', title: 'Sezon', type: 'number', fieldset: 'meta' }),
     defineField({ name: 'episodeNumber', title: 'Numer odcinka', type: 'number', fieldset: 'meta' }),
