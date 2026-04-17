@@ -75,7 +75,7 @@ export default function DoctorsVideoPage() {
             <div className="relative aspect-video w-full bg-esti-dark overflow-hidden">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src="https://res.cloudinary.com/dgcg6hz1d/image/upload/q_auto/f_auto/v1776275430/IMG_0905_dtrkre.jpg"
+                src="https://res.cloudinary.com/dgcg6hz1d/image/upload/q_auto/f_auto/v1776412173/Kopia_Kopia_Kto_by_nie_chcia%C5%82_byc%CC%81_m%C5%82ody_pie%CC%A8kny_i_jeszcze_w_pe%C5%82ni_si%C5%82_1_uucrjb.png"
                 alt="EstiTalk for Doctors – podgląd odcinka"
                 className="absolute inset-0 w-full h-full object-cover opacity-50"
               />
