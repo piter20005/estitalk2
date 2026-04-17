@@ -233,16 +233,9 @@ export default function YouTubePreviewHero({
         aria-hidden="true"
       />
 
-      {topSlot && (
-        <div className="absolute top-36 left-0 right-0 z-10 container mx-auto px-6 max-w-5xl">
-          <div className="text-white [text-shadow:_0_2px_16px_rgb(0_0_0_/_50%)]">
-            {topSlot}
-          </div>
-        </div>
-      )}
-
       <div className="relative z-10 container mx-auto px-6 h-full flex flex-col justify-end pb-20 md:pb-24 max-w-5xl">
         <div className="text-white [text-shadow:_0_2px_24px_rgb(0_0_0_/_50%)] animate-fade-in-up max-w-4xl">
+          {topSlot && <div className="mb-6">{topSlot}</div>}
           {children}
         </div>
       </div>
