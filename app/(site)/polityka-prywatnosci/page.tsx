@@ -38,11 +38,11 @@ export default function PrivacyPolicyPage() {
               Administratorem danych osobowych zbieranych za pośrednictwem serwisu{' '}
               <strong className="text-esti-dark">estitalk.pl</strong> jest{' '}
               <span className="text-esti-dark font-medium">
-                [DO UZUPEŁNIENIA: pełna nazwa firmy / dane osoby fizycznej prowadzącej działalność]
+                Esti Clinic Specjalistyczna Praktyka Lekarska Tatiana Jasińska
               </span>
-              , z siedzibą pod adresem{' '}
-              <span className="text-esti-dark font-medium">[DO UZUPEŁNIENIA: adres siedziby]</span>,
-              NIP: <span className="text-esti-dark font-medium">[DO UZUPEŁNIENIA: NIP]</span>.
+              , z siedzibą przy{' '}
+              <span className="text-esti-dark font-medium">ul. Karola Miarki 13, 42-700 Lubliniec</span>,
+              NIP: <span className="text-esti-dark font-medium">5751833068</span>.
             </p>
             <p>
               Kontakt z administratorem:{' '}
