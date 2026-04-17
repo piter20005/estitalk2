@@ -31,9 +31,12 @@ interface YTPlayerEvent {
 interface YTWindow extends Window {
   YT?: {
     Player: new (
-      el: HTMLElement,
+      el: HTMLElement | string,
       options: {
+        width?: string | number;
+        height?: string | number;
         videoId: string;
+        host?: string;
         playerVars?: Record<string, number | string>;
         events?: {
           onReady?: (e: YTPlayerEvent) => void;
@@ -78,28 +81,38 @@ export default function YouTubePreviewHero({
   topSlot,
   children,
 }: YouTubePreviewHeroProps) {
-  const mountRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const [playerReady, setPlayerReady] = useState(false);
   const [failed, setFailed] = useState(false);
 
   useEffect(() => {
-    if (!videoId || !mountRef.current) return;
+    if (!videoId || !containerRef.current) return;
 
     let mounted = true;
     let player: YTPlayer | null = null;
     let interval: ReturnType<typeof setInterval> | null = null;
 
+    const container = containerRef.current;
+    container.replaceChildren();
+    const target = document.createElement('div');
+    target.style.width = '100%';
+    target.style.height = '100%';
+    container.appendChild(target);
+
     loadYouTubeAPI()
       .then(() => {
-        if (!mounted || !mountRef.current) return;
+        if (!mounted) return;
         const w = window as YTWindow;
         if (!w.YT?.Player) {
           setFailed(true);
           return;
         }
 
-        player = new w.YT.Player(mountRef.current, {
+        player = new w.YT.Player(target, {
+          width: '100%',
+          height: '100%',
           videoId,
+          host: 'https://www.youtube-nocookie.com',
           playerVars: {
             autoplay: 1,
             mute: 1,
@@ -113,12 +126,17 @@ export default function YouTubePreviewHero({
             fs: 0,
             loop: 1,
             playlist: videoId,
+            origin: window.location.origin,
           },
           events: {
             onReady: (e) => {
               if (!mounted) return;
-              e.target.mute();
-              e.target.playVideo();
+              try {
+                e.target.mute();
+                e.target.playVideo();
+              } catch {
+                /* ignore */
+              }
               setPlayerReady(true);
               interval = setInterval(() => {
                 if (!player) return;
@@ -135,8 +153,12 @@ export default function YouTubePreviewHero({
               if (!mounted) return;
               const ended = w.YT?.PlayerState.ENDED;
               if (typeof ended === 'number' && e.data === ended) {
-                e.target.seekTo(0, true);
-                e.target.playVideo();
+                try {
+                  e.target.seekTo(0, true);
+                  e.target.playVideo();
+                } catch {
+                  /* ignore */
+                }
               }
             },
             onError: () => {
@@ -175,8 +197,8 @@ export default function YouTubePreviewHero({
           }`}
           aria-hidden="true"
         >
-          <div className="absolute inset-0 scale-[1.35] origin-center">
-            <div ref={mountRef} className="w-full h-full" />
+          <div className="absolute inset-0 scale-[1.35] origin-center [&_iframe]:w-full [&_iframe]:h-full [&_iframe]:block">
+            <div ref={containerRef} className="w-full h-full" />
           </div>
         </div>
       )}

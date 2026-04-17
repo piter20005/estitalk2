@@ -88,93 +88,8 @@ export default function EpisodePage({ episode }: EpisodePageProps) {
           </div>
         )}
 
-        <section>
-          <span className="block w-12 h-px bg-esti-gold mb-5" aria-hidden="true" />
-          <h2 className="font-serif text-3xl md:text-4xl text-esti-dark mb-8">O odcinku</h2>
-
-          <article>
-            {paragraphs.length > 0 ? (
-              paragraphs.map((p, i) => (
-                <p
-                  key={i}
-                  className="font-sans font-light text-base leading-relaxed text-esti-taupe mb-4"
-                >
-                  {p}
-                </p>
-              ))
-            ) : (
-              episode.description && (
-                <p className="font-sans font-light text-base leading-relaxed text-esti-taupe whitespace-pre-line">
-                  {episode.description}
-                </p>
-              )
-            )}
-
-            {Boolean(episode.notes) && (
-              <div className="mt-10 pl-5 border-l-2 border-esti-gold/60 text-esti-taupe/80 italic space-y-3 text-sm">
-                <PortableText value={episode.notes as never} />
-              </div>
-            )}
-          </article>
-        </section>
-
-        {hasResources && (
-          <section className="mt-14 pt-10 border-t border-esti-taupe/15">
-            <h3 className="font-serif text-sm text-esti-taupe uppercase tracking-[0.2em] mb-5">
-              Linki i zasoby
-            </h3>
-            <div className="flex flex-wrap gap-3">
-              {episode.resources!.map((r) => (
-                <a
-                  key={r.url}
-                  href={r.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-4 py-2 border border-esti-taupe/25 rounded-sm text-sm text-esti-taupe hover:bg-esti-dark hover:text-white hover:border-esti-dark transition-colors"
-                >
-                  <span>{r.label}</span>
-                  <ExternalLink size={13} className="opacity-60" />
-                </a>
-              ))}
-            </div>
-          </section>
-        )}
-
-        {hasGuests && (
-          <section className="mt-16 pt-12 border-t border-esti-taupe/15">
-            <h2 className="font-serif text-3xl text-esti-dark mb-8">Goście odcinka</h2>
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {episode.guests!.map((g) => (
-                <Link
-                  key={g._id}
-                  href={`/goscie/${g.slug}`}
-                  className="flex items-center gap-4 bg-white border border-gray-100 rounded-sm p-5 hover:shadow-md hover:border-esti-taupe/40 transition-all group"
-                >
-                  <div className="w-16 h-16 overflow-hidden rounded-full bg-esti-beige/30 shrink-0">
-                    <SanityImage
-                      image={g.photo}
-                      alt={g.name}
-                      width={128}
-                      height={128}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform"
-                    />
-                  </div>
-                  <div className="min-w-0">
-                    <p className="font-medium text-esti-dark group-hover:text-esti-taupe transition-colors">
-                      {g.name}
-                    </p>
-                    {g.profession && (
-                      <p className="text-xs text-esti-taupe mt-1">{g.profession}</p>
-                    )}
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </section>
-        )}
-
         {(hasTopics || hasPlatforms) && (
-          <section className="mt-16 pt-12 border-t border-esti-taupe/15 grid gap-12 md:grid-cols-2">
+          <section className="grid gap-12 md:grid-cols-2">
             {hasTopics && (
               <div>
                 <h3 className="font-serif text-sm text-esti-taupe uppercase tracking-[0.2em] mb-5">
@@ -238,6 +153,91 @@ export default function EpisodePage({ episode }: EpisodePageProps) {
             )}
           </section>
         )}
+
+        {hasGuests && (
+          <section className="mt-16 pt-12 border-t border-esti-taupe/15">
+            <h2 className="font-serif text-3xl text-esti-dark mb-8">Goście odcinka</h2>
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {episode.guests!.map((g) => (
+                <Link
+                  key={g._id}
+                  href={`/goscie/${g.slug}`}
+                  className="flex items-center gap-4 bg-white border border-gray-100 rounded-sm p-5 hover:shadow-md hover:border-esti-taupe/40 transition-all group"
+                >
+                  <div className="w-16 h-16 overflow-hidden rounded-full bg-esti-beige/30 shrink-0">
+                    <SanityImage
+                      image={g.photo}
+                      alt={g.name}
+                      width={128}
+                      height={128}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                    />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="font-medium text-esti-dark group-hover:text-esti-taupe transition-colors">
+                      {g.name}
+                    </p>
+                    {g.profession && (
+                      <p className="text-xs text-esti-taupe mt-1">{g.profession}</p>
+                    )}
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {hasResources && (
+          <section className="mt-16 pt-12 border-t border-esti-taupe/15">
+            <h3 className="font-serif text-sm text-esti-taupe uppercase tracking-[0.2em] mb-5">
+              Linki i zasoby
+            </h3>
+            <div className="flex flex-wrap gap-3">
+              {episode.resources!.map((r) => (
+                <a
+                  key={r.url}
+                  href={r.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-4 py-2 border border-esti-taupe/25 rounded-sm text-sm text-esti-taupe hover:bg-esti-dark hover:text-white hover:border-esti-dark transition-colors"
+                >
+                  <span>{r.label}</span>
+                  <ExternalLink size={13} className="opacity-60" />
+                </a>
+              ))}
+            </div>
+          </section>
+        )}
+
+        <section className="mt-16 pt-12 border-t border-esti-taupe/15">
+          <span className="block w-12 h-px bg-esti-gold mb-5" aria-hidden="true" />
+          <h2 className="font-serif text-3xl md:text-4xl text-esti-dark mb-8">O odcinku</h2>
+
+          <article>
+            {paragraphs.length > 0 ? (
+              paragraphs.map((p, i) => (
+                <p
+                  key={i}
+                  className="font-sans font-light text-base leading-relaxed text-esti-taupe mb-4"
+                >
+                  {p}
+                </p>
+              ))
+            ) : (
+              episode.description && (
+                <p className="font-sans font-light text-base leading-relaxed text-esti-taupe whitespace-pre-line">
+                  {episode.description}
+                </p>
+              )
+            )}
+
+            {Boolean(episode.notes) && (
+              <div className="mt-10 pl-5 border-l-2 border-esti-gold/60 text-esti-taupe/80 italic space-y-3 text-sm">
+                <PortableText value={episode.notes as never} />
+              </div>
+            )}
+          </article>
+        </section>
       </div>
     </div>
   );
