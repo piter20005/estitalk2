@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { SOCIAL_LINKS } from './socialLinks';
+import CookieSettingsButton from './CookieSettingsButton';
 
 export default function Footer() {
   return (
@@ -42,22 +43,30 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-6">
-          <p className="text-xs font-light opacity-50 uppercase tracking-wide">
-            &copy; {new Date().getFullYear()} Esti Talk. Wszelkie prawa zastrzeżone.
-          </p>
-          <div className="flex gap-6">
-            {SOCIAL_LINKS.map(({ name, href, Icon, external }) => (
-              <a
-                key={name}
-                href={href}
-                {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-                aria-label={name}
-                className="opacity-60 hover:opacity-100 hover:text-esti-beige transition-all"
-              >
-                <Icon size={20} />
-              </a>
-            ))}
+        <div className="border-t border-white/10 pt-8 flex flex-col gap-6">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+            <p className="text-xs font-light opacity-50 uppercase tracking-wide">
+              &copy; {new Date().getFullYear()} Esti Talk. Wszelkie prawa zastrzeżone.
+            </p>
+            <div className="flex gap-6">
+              {SOCIAL_LINKS.map(({ name, href, Icon, external }) => (
+                <a
+                  key={name}
+                  href={href}
+                  {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                  aria-label={name}
+                  className="opacity-60 hover:opacity-100 hover:text-esti-beige transition-all"
+                >
+                  <Icon size={20} />
+                </a>
+              ))}
+            </div>
+          </div>
+          <div className="flex flex-wrap gap-x-6 gap-y-2 text-xs font-light opacity-60">
+            <Link href="/polityka-prywatnosci" className="hover:text-white transition-colors">
+              Polityka prywatności
+            </Link>
+            <CookieSettingsButton />
           </div>
         </div>
       </div>

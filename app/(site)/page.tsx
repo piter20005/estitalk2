@@ -13,6 +13,7 @@ import Platforms from '@/components/Platforms';
 import { sanityFetch } from '@/sanity/lib/fetch';
 import { ALL_GUESTS_QUERY, FEATURED_EPISODES_QUERY } from '@/sanity/lib/queries';
 import type { Episode, Guest } from '@/types';
+import { jsonLdScript, podcastSeriesLd } from '@/lib/jsonLd';
 
 export const revalidate = 60;
 
@@ -30,6 +31,10 @@ export default async function HomePage() {
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(podcastSeriesLd()) }}
+      />
       <Hero />
       <Marquee />
       <Topics />

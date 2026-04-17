@@ -4,6 +4,7 @@ import { ArrowLeft, Instagram, Linkedin, Globe, Facebook, Youtube, Music } from 
 import SanityImage from './SanityImage';
 import EpisodeCard from './EpisodeCard';
 import type { Guest } from '@/types';
+import { guestPersonLd, jsonLdScript } from '@/lib/jsonLd';
 
 const SOCIAL_ICONS: Record<string, React.ElementType> = {
   instagram: Instagram,
@@ -21,6 +22,10 @@ interface GuestPageProps {
 export default function GuestPage({ guest }: GuestPageProps) {
   return (
     <div className="min-h-screen bg-esti-light pt-24 pb-20 animate-fade-in-up">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(guestPersonLd(guest)) }}
+      />
       <div className="container mx-auto px-6 max-w-6xl">
         <Link
           href="/goscie"
