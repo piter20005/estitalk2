@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Menu, X } from 'lucide-react';
+import { SOCIAL_LINKS } from './socialLinks';
 
 const NAV_LINKS = [
   { name: 'O prowadzącej', href: '/#about' },
@@ -102,38 +103,56 @@ export default function Header() {
         </nav>
 
         <button
-          className={`md:hidden transition-colors duration-300 ${
-            overHero ? 'text-white' : 'text-esti-dark'
+          className={`md:hidden relative z-50 transition-colors duration-300 ${
+            mobileMenuOpen ? 'text-esti-dark' : overHero ? 'text-white' : 'text-esti-dark'
           }`}
           onClick={() => setMobileMenuOpen((v) => !v)}
-          aria-label="Menu"
+          aria-label={mobileMenuOpen ? 'Zamknij menu' : 'Otwórz menu'}
+          aria-expanded={mobileMenuOpen}
         >
           {mobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
         </button>
       </div>
 
       <div
-        className={`fixed inset-0 bg-esti-light z-40 flex flex-col items-center justify-center gap-8 transition-transform duration-500 ease-in-out md:hidden ${
+        className={`fixed inset-0 bg-esti-light z-40 flex flex-col md:hidden transition-transform duration-500 ease-in-out ${
           mobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
+        aria-hidden={!mobileMenuOpen}
       >
-        {NAV_LINKS.map((link) => (
+        <div className="flex-1 flex flex-col items-center justify-center gap-8 px-6">
+          {NAV_LINKS.map((link) => (
+            <Link
+              key={link.name}
+              href={link.href}
+              className="text-3xl font-serif text-esti-dark"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              {link.name}
+            </Link>
+          ))}
           <Link
-            key={link.name}
-            href={link.href}
-            className="text-3xl font-serif text-esti-dark"
+            href={DOCTORS_LINK.href}
+            className="mt-2 px-6 py-3 rounded-full bg-esti-dark text-white text-sm uppercase tracking-widest font-bold"
             onClick={() => setMobileMenuOpen(false)}
           >
-            {link.name}
+            {DOCTORS_LINK.name}
           </Link>
-        ))}
-        <Link
-          href={DOCTORS_LINK.href}
-          className="mt-2 px-6 py-3 rounded-full bg-esti-dark text-white text-sm uppercase tracking-widest font-bold"
-          onClick={() => setMobileMenuOpen(false)}
-        >
-          {DOCTORS_LINK.name}
-        </Link>
+        </div>
+        <div className="pb-10 pt-6 flex justify-center gap-8 text-esti-dark">
+          {SOCIAL_LINKS.map(({ name, href, Icon, external }) => (
+            <a
+              key={name}
+              href={href}
+              aria-label={name}
+              {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+              className="opacity-70 hover:opacity-100 hover:text-esti-taupe transition-all"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              <Icon size={24} />
+            </a>
+          ))}
+        </div>
       </div>
     </header>
   );

@@ -1,7 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { Mail, Facebook } from 'lucide-react';
-import TikTokIcon from './icons/TikTokIcon';
+import { SOCIAL_LINKS } from './socialLinks';
 
 export default function Footer() {
   return (
@@ -48,31 +47,17 @@ export default function Footer() {
             &copy; {new Date().getFullYear()} Esti Talk. Wszelkie prawa zastrzeżone.
           </p>
           <div className="flex gap-6">
-            <a
-              href="https://www.tiktok.com/@estitalk"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="TikTok"
-              className="opacity-60 hover:opacity-100 hover:text-esti-beige transition-all"
-            >
-              <TikTokIcon size={20} />
-            </a>
-            <a
-              href="https://www.facebook.com/profile.php?id=61578986545628"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Facebook"
-              className="opacity-60 hover:opacity-100 hover:text-esti-beige transition-all"
-            >
-              <Facebook size={20} />
-            </a>
-            <a
-              href="mailto:kontakt@estitalk.pl"
-              aria-label="Email"
-              className="opacity-60 hover:opacity-100 hover:text-esti-beige transition-all"
-            >
-              <Mail size={20} />
-            </a>
+            {SOCIAL_LINKS.map(({ name, href, Icon, external }) => (
+              <a
+                key={name}
+                href={href}
+                {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                aria-label={name}
+                className="opacity-60 hover:opacity-100 hover:text-esti-beige transition-all"
+              >
+                <Icon size={20} />
+              </a>
+            ))}
           </div>
         </div>
       </div>
