@@ -25,7 +25,9 @@ export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const isHome = pathname === '/';
-  const overHero = isHome && !isScrolled && !mobileMenuOpen;
+  const isEpisode = /^\/odcinki\/.+/.test(pathname ?? '');
+  const hasHeroVideo = isHome || isEpisode;
+  const overHero = hasHeroVideo && !isScrolled && !mobileMenuOpen;
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 50);
@@ -37,7 +39,7 @@ export default function Header() {
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-        isScrolled || !isHome
+        isScrolled || !hasHeroVideo
           ? 'bg-esti-light/90 backdrop-blur-md py-4 shadow-sm'
           : 'bg-transparent py-8'
       }`}
