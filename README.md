@@ -45,6 +45,19 @@ Copy from `.env.local.example`. Variables:
 - `NEXT_PUBLIC_SANITY_API_VERSION` — public, set in Netlify
 - `SANITY_API_READ_TOKEN` — server-only Viewer token, set in Netlify
 - `SANITY_WRITE_TOKEN` — Editor token for the sync script; **GitHub Secret only**, never in Netlify or the repo
+- `STRIPE_SECRET_KEY` — Stripe secret key, server-only, set in Netlify
+- `DOCTORS_ACCESS_SECRET` — random HMAC secret for the “For Doctors” cookie, server-only, set in Netlify (`openssl rand -base64 32`)
+
+## „For Doctors" gate
+
+The Vimeo video on `/for-doctors` is protected via an httpOnly cookie set by `/api/doctors/grant` after verifying a real Stripe Checkout session. Existing buyers (who unlocked via the legacy `localStorage.doctors_access` flag on their device) keep access via that fallback — no migration required.
+
+**Stripe Payment Link configuration (one-time setup):**
+
+1. Stripe Dashboard → Payment Links → edit the “For Doctors” link
+2. After payment → **Don't show confirmation page** → **Redirect customers to a custom URL**
+3. URL: `https://estitalk.pl/api/doctors/grant?session_id={CHECKOUT_SESSION_ID}`
+4. Make sure `STRIPE_SECRET_KEY` and `DOCTORS_ACCESS_SECRET` are set in Netlify env vars
 
 ## Deployment (Netlify)
 

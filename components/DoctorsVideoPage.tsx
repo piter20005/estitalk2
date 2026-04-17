@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, ArrowRight, ShoppingBag, Lock, CheckCircle } from 'lucide-react';
 
-const ACCESS_TOKEN = 'estidoctors2025film';
+const LEGACY_LOCALSTORAGE_KEY = 'doctors_access';
 
 const TOPICS = [
   'Toksyna botulinowa w łysieniu androgenowym — co mówią doniesienia azjatyckie, gdzie leży granica między wskazaniem medycznym a marketingiem i dlaczego suplementacja cynku to nie jest odpowiedź',
@@ -17,22 +17,26 @@ const TOPICS = [
   'Sekwencja toksyna + energy based devices: okno dwóch tygodni, kolejność zabiegów, biostymulatory i grzanie skóry oraz ekspozycja słoneczna po toksynie bez mitów',
 ];
 
-export default function DoctorsVideoPage() {
-  const [isUnlocked, setIsUnlocked] = useState(false);
+interface DoctorsVideoPageProps {
+  initialUnlocked?: boolean;
+}
+
+export default function DoctorsVideoPage({ initialUnlocked = false }: DoctorsVideoPageProps) {
+  const [isUnlocked, setIsUnlocked] = useState(initialUnlocked);
 
   useEffect(() => {
     window.scrollTo(0, 0);
 
     if (typeof window === 'undefined') return;
-    if (localStorage.getItem('doctors_access') === 'true') {
+
+    if (localStorage.getItem(LEGACY_LOCALSTORAGE_KEY) === 'true') {
       setIsUnlocked(true);
-      return;
     }
 
     const params = new URLSearchParams(window.location.search);
-    if (params.get('dkey') === ACCESS_TOKEN) {
+    if (params.get('granted') === '1') {
       setIsUnlocked(true);
-      localStorage.setItem('doctors_access', 'true');
+      localStorage.setItem(LEGACY_LOCALSTORAGE_KEY, 'true');
       window.history.replaceState({}, '', '/for-doctors');
     }
   }, []);
