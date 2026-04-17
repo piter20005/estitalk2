@@ -234,7 +234,7 @@ export default function YouTubePreviewHero({
       />
 
       {topSlot && (
-        <div className="absolute top-24 left-0 right-0 z-10 container mx-auto px-6 max-w-5xl">
+        <div className="absolute top-36 left-0 right-0 z-10 container mx-auto px-6 max-w-5xl">
           <div className="text-white [text-shadow:_0_2px_16px_rgb(0_0_0_/_50%)]">
             {topSlot}
           </div>
