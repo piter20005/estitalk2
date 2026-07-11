@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type FormEvent } from 'react';
 import Link from 'next/link';
 import {
   ArrowLeft,
@@ -11,9 +11,15 @@ import {
   Stethoscope,
   ReceiptText,
   ShieldCheck,
+  KeyRound,
+  Loader2,
 } from 'lucide-react';
 
-const ACCESS_TOKEN = 'estidoctors2025film';
+// Legacy unlock param used by the old Stripe redirect (?dkey=...). Kept only
+// until the Payment Link redirect is switched to ?session_id={CHECKOUT_SESSION_ID}.
+const LEGACY_ACCESS_TOKEN = 'estidoctors2025film';
+const TOKEN_STORAGE_KEY = 'doctors_access_token';
+const LEGACY_STORAGE_KEY = 'doctors_access';
 
 const TOPICS = [
   'Toksyna botulinowa w łysieniu androgenowym — co mówią doniesienia azjatyckie, gdzie leży granica między wskazaniem medycznym a marketingiem i dlaczego suplementacja cynku to nie jest odpowiedź',
@@ -57,27 +63,92 @@ const FAQ = [
     question: 'Czy dostęp jest ograniczony czasowo?',
     answer: 'Nie. Jest to jednorazowy zakup z dostępem do pełnego odcinka bez limitu czasu.',
   },
+  {
+    question: 'Co jeśli zmienię przeglądarkę, urządzenie albo wyczyszczę historię?',
+    answer:
+      'Dostęp jest przypisany do adresu e-mail podanego przy zakupie. Na nowym urządzeniu wystarczy wpisać ten adres w sekcji „Masz już dostęp?”, a odcinek zostanie odblokowany ponownie.',
+  },
 ];
+
+type RecoverStatus = 'idle' | 'loading' | 'not_found' | 'error';
 
 export default function DoctorsVideoPage() {
   const [isUnlocked, setIsUnlocked] = useState(false);
+  const [isVerifyingPurchase, setIsVerifyingPurchase] = useState(false);
+  const [recoverEmail, setRecoverEmail] = useState('');
+  const [recoverStatus, setRecoverStatus] = useState<RecoverStatus>('idle');
 
   useEffect(() => {
     window.scrollTo(0, 0);
 
     if (typeof window === 'undefined') return;
-    if (localStorage.getItem('doctors_access') === 'true') {
+    if (
+      localStorage.getItem(TOKEN_STORAGE_KEY) ||
+      localStorage.getItem(LEGACY_STORAGE_KEY) === 'true'
+    ) {
       setIsUnlocked(true);
       return;
     }
 
     const params = new URLSearchParams(window.location.search);
-    if (params.get('dkey') === ACCESS_TOKEN) {
+
+    // Return from Stripe Checkout: verify the session server-side and store
+    // a portable access token bound to the buyer's e-mail.
+    const sessionId = params.get('session_id');
+    if (sessionId) {
+      setIsVerifyingPurchase(true);
+      window.history.replaceState({}, '', '/for-doctors');
+      fetch('/api/doctors-access/session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sessionId }),
+      })
+        .then((res) => (res.ok ? res.json() : Promise.reject(new Error('verification_failed'))))
+        .then((data: { token: string }) => {
+          localStorage.setItem(TOKEN_STORAGE_KEY, data.token);
+          setIsUnlocked(true);
+        })
+        .catch(() => {
+          // Payment just happened but verification failed (e.g. network hiccup):
+          // the buyer can always recover access with their e-mail below.
+        })
+        .finally(() => setIsVerifyingPurchase(false));
+      return;
+    }
+
+    if (params.get('dkey') === LEGACY_ACCESS_TOKEN) {
       setIsUnlocked(true);
-      localStorage.setItem('doctors_access', 'true');
+      localStorage.setItem(LEGACY_STORAGE_KEY, 'true');
       window.history.replaceState({}, '', '/for-doctors');
     }
   }, []);
+
+  const handleRecover = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const email = recoverEmail.trim();
+    if (!email) return;
+    setRecoverStatus('loading');
+    try {
+      const res = await fetch('/api/doctors-access/recover', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+      if (res.ok) {
+        const data: { token: string } = await res.json();
+        localStorage.setItem(TOKEN_STORAGE_KEY, data.token);
+        setIsUnlocked(true);
+        setRecoverStatus('idle');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else if (res.status === 404) {
+        setRecoverStatus('not_found');
+      } else {
+        setRecoverStatus('error');
+      }
+    } catch {
+      setRecoverStatus('error');
+    }
+  };
 
   return (
     <div className="min-h-screen bg-esti-light pt-24 pb-20 animate-fade-in-up">
@@ -140,12 +211,29 @@ export default function DoctorsVideoPage() {
                 className="absolute inset-0 w-full h-full object-cover opacity-50"
               />
               <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 z-10">
-                <div className="w-16 h-16 rounded-full bg-white/10 border border-white/20 flex items-center justify-center backdrop-blur-sm">
-                  <Lock size={26} className="text-esti-gold" />
-                </div>
-                <p className="text-white/70 text-sm font-sans tracking-wide">
-                  Kup dostęp, aby obejrzeć pełny odcinek
-                </p>
+                {isVerifyingPurchase ? (
+                  <>
+                    <Loader2 size={32} className="text-esti-gold animate-spin" />
+                    <p className="text-white/70 text-sm font-sans tracking-wide">
+                      Potwierdzamy Twoją płatność…
+                    </p>
+                  </>
+                ) : (
+                  <>
+                    <div className="w-16 h-16 rounded-full bg-white/10 border border-white/20 flex items-center justify-center backdrop-blur-sm">
+                      <Lock size={26} className="text-esti-gold" />
+                    </div>
+                    <p className="text-white/70 text-sm font-sans tracking-wide">
+                      Kup dostęp, aby obejrzeć pełny odcinek
+                    </p>
+                    <a
+                      href="#odzyskaj-dostep"
+                      className="text-esti-gold/90 text-xs font-sans tracking-wide underline underline-offset-4 hover:text-esti-gold"
+                    >
+                      Masz już dostęp? Odblokuj na tym urządzeniu
+                    </a>
+                  </>
+                )}
               </div>
             </div>
           )}
@@ -237,7 +325,12 @@ export default function DoctorsVideoPage() {
                     </a>
                     <p className="text-center text-xs text-gray-500">Bezpieczna płatność kartą lub BLIK przez Stripe.</p>
                     <div className="mt-6 pt-6 border-t border-white/10 space-y-2">
-                      {['Natychmiastowy dostęp po zakupie', 'Wymagany siedmiocyfrowy numer PWZ', 'Dostęp bez limitu czasu'].map((item) => (
+                      {[
+                        'Natychmiastowy dostęp po zakupie',
+                        'Wymagany siedmiocyfrowy numer PWZ',
+                        'Dostęp bez limitu czasu',
+                        'Odzyskasz dostęp na każdym urządzeniu',
+                      ].map((item) => (
                         <div key={item} className="flex items-center gap-2 text-xs text-gray-400">
                           <span className="w-1 h-1 rounded-full bg-esti-gold flex-shrink-0" />
                           {item}
@@ -245,6 +338,60 @@ export default function DoctorsVideoPage() {
                       ))}
                     </div>
                   </div>
+                </div>
+              )}
+
+              {!isUnlocked && (
+                <div
+                  id="odzyskaj-dostep"
+                  className="mt-4 bg-white border border-gray-100 rounded-sm p-6 shadow-sm scroll-mt-32"
+                >
+                  <div className="flex items-center gap-2 mb-2">
+                    <KeyRound size={18} className="text-esti-gold" />
+                    <h3 className="font-serif text-lg text-esti-dark">Masz już dostęp?</h3>
+                  </div>
+                  <p className="text-xs text-esti-taupe leading-relaxed mb-4">
+                    Kupiłeś odcinek wcześniej? Wpisz adres e-mail podany przy płatności, a odblokujemy go na tym
+                    urządzeniu.
+                  </p>
+                  <form onSubmit={handleRecover} className="space-y-3">
+                    <input
+                      type="email"
+                      required
+                      value={recoverEmail}
+                      onChange={(e) => {
+                        setRecoverEmail(e.target.value);
+                        if (recoverStatus !== 'idle' && recoverStatus !== 'loading') setRecoverStatus('idle');
+                      }}
+                      placeholder="Adres e-mail z zakupu"
+                      className="w-full border border-gray-200 rounded-sm px-4 py-3 text-sm text-esti-dark placeholder:text-gray-400 focus:outline-none focus:border-esti-gold"
+                    />
+                    <button
+                      type="submit"
+                      disabled={recoverStatus === 'loading'}
+                      className="flex items-center justify-center gap-2 w-full bg-esti-dark text-white py-3 rounded-sm text-xs font-bold uppercase tracking-widest hover:bg-esti-gold hover:text-esti-dark transition-colors disabled:opacity-60"
+                    >
+                      {recoverStatus === 'loading' ? (
+                        <>
+                          <Loader2 size={14} className="animate-spin" />
+                          Sprawdzamy…
+                        </>
+                      ) : (
+                        'Odblokuj odcinek'
+                      )}
+                    </button>
+                  </form>
+                  {recoverStatus === 'not_found' && (
+                    <p className="mt-3 text-xs text-red-600 leading-relaxed">
+                      Nie znaleźliśmy opłaconego zakupu dla tego adresu. Sprawdź, czy to ten sam e-mail, który
+                      podałeś w Stripe przy płatności.
+                    </p>
+                  )}
+                  {recoverStatus === 'error' && (
+                    <p className="mt-3 text-xs text-red-600 leading-relaxed">
+                      Coś poszło nie tak. Spróbuj ponownie za chwilę lub napisz do nas.
+                    </p>
+                  )}
                 </div>
               )}
 
