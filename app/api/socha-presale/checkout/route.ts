@@ -114,23 +114,23 @@ export async function POST(request: NextRequest) {
       console.error(`SOCHA_PRESALE: Stripe returned ${stripeResponse.status}: ${errorBody}`);
       const response = redirectToStatus(request, 'error');
 
-      if (process.env.CONTEXT === 'deploy-preview') {
-        try {
-          const stripeError = JSON.parse(errorBody) as {
-            error?: { code?: string; param?: string; type?: string };
-          };
-          const diagnostic = [
-            stripeError.error?.type,
-            stripeError.error?.code,
-            stripeError.error?.param,
-          ]
-            .filter(Boolean)
-            .join(':');
+      try {
+        const stripeError = JSON.parse(errorBody) as {
+          error?: { code?: string; param?: string; type?: string };
+        };
+        const diagnostic = [
+          stripeError.error?.type,
+          stripeError.error?.code,
+          stripeError.error?.param,
+        ]
+          .filter(Boolean)
+          .join(':');
 
-          if (diagnostic) response.headers.set('x-estitalk-stripe-error', diagnostic);
-        } catch {
-          // The full response remains available only in server logs.
-        }
+        // Stripe's public error type/code/parameter are safe to expose and make
+        // diagnosing a broken checkout possible without exposing its message.
+        if (diagnostic) response.headers.set('x-estitalk-stripe-error', diagnostic);
+      } catch {
+        // The full response remains available only in server logs.
       }
 
       return response;
