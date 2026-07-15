@@ -4,9 +4,7 @@ import {
   ArrowRight,
   Check,
   CheckCircle2,
-  Clock3,
   Headphones,
-  HeartHandshake,
   LockKeyhole,
   Mail,
   MessageCircleQuestion,
@@ -37,12 +35,12 @@ const FAQ = [
   {
     question: 'Kiedy otrzymam dostęp?',
     answer:
-      'Po zakończeniu montażu. Dokładny termin premiery oraz instrukcję dostępu wyślemy na adres e-mail podany podczas płatności. Nie trzeba zakładać dodatkowego konta podczas przedsprzedaży.',
+      'Dokładny termin premiery oraz instrukcję dostępu wyślemy na adres e-mail podany podczas płatności. Nie trzeba zakładać dodatkowego konta podczas przedsprzedaży.',
   },
   {
-    question: 'Co się stanie, jeśli płatna premiera nie dojdzie do skutku?',
+    question: 'Czy moje zamówienie jest zabezpieczone?',
     answer:
-      'Jeżeli zdecydujemy o niepublikowaniu płatnego materiału, zamówienie zostanie anulowane, a wpłacona kwota zwrócona tą samą metodą płatności.',
+      'Tak. Jeżeli materiał nie zostanie opublikowany, otrzymasz zwrot 100% wpłaconej kwoty tą samą metodą płatności.',
   },
   {
     question: 'Czy to jest konsultacja medyczna?',
@@ -139,8 +137,8 @@ export default function SochaPresalePage({ status }: { status?: PresaleStatus })
               </h1>
               <p className="mt-7 max-w-2xl text-lg font-light leading-relaxed text-white/80 sm:text-xl">
                 Hormony, ciało, seks i relacje w szczerej rozmowie dr Tatiany Jasińskiej z prof. Maciejem Sochą.
-                Nagraliśmy ponad trzy godziny materiału. Teraz przygotowujemy z niego uporządkowaną premierę dla
-                kobiet, które chcą lepiej rozumieć zachodzące w nich zmiany.
+                Ponad trzy godziny materiału dla kobiet, które chcą lepiej rozumieć zachodzące w nich zmiany i
+                świadomie rozmawiać o nich z lekarzem.
               </p>
               <div className="mt-9 flex flex-wrap gap-3 text-sm text-white/75">
                 <span className="border border-white/20 bg-black/20 px-4 py-2 backdrop-blur-sm">
@@ -158,7 +156,7 @@ export default function SochaPresalePage({ status }: { status?: PresaleStatus })
                   href="#zamow"
                   className="group inline-flex items-center justify-center gap-3 bg-esti-gold px-8 py-4 text-sm font-bold uppercase tracking-widest text-esti-dark transition-colors hover:bg-white"
                 >
-                  Zamów w przedsprzedaży
+                  Kupuję dostęp za {SOCHA_PRESALE.priceGrossPln} zł
                   <ArrowRight size={18} className="transition-transform group-hover:translate-x-1" />
                 </a>
                 <a
@@ -241,7 +239,7 @@ export default function SochaPresalePage({ status }: { status?: PresaleStatus })
                       type="submit"
                       className="group flex w-full items-center justify-center gap-3 bg-esti-dark px-6 py-4 text-sm font-bold uppercase tracking-widest text-white transition-colors hover:bg-esti-gold hover:text-esti-dark"
                     >
-                      Zamawiam za {SOCHA_PRESALE.priceGrossPln} zł
+                      Kupuję dostęp za {SOCHA_PRESALE.priceGrossPln} zł
                       <ArrowRight size={18} className="transition-transform group-hover:translate-x-1" />
                     </button>
                   </form>
@@ -329,18 +327,18 @@ export default function SochaPresalePage({ status }: { status?: PresaleStatus })
               {[
                 {
                   Icon: ReceiptText,
-                  title: '1. Zamawiasz',
-                  text: `Płacisz jednorazowo ${SOCHA_PRESALE.priceGrossPln} zł przez Stripe. Adres e-mail z płatności zapisujemy jako adres do dostępu.`,
-                },
-                {
-                  Icon: Clock3,
-                  title: '2. My montujemy',
-                  text: 'Redagujemy ponad trzy godziny rozmowy, dodajemy rozdziały i weryfikujemy fragmenty wymagające medycznego doprecyzowania.',
+                  title: '1. Kupujesz dostęp',
+                  text: `Płacisz jednorazowo ${SOCHA_PRESALE.priceGrossPln} zł. Bez subskrypcji i dodatkowych opłat.`,
                 },
                 {
                   Icon: Mail,
-                  title: '3. Otrzymujesz dostęp',
-                  text: 'Termin premiery i sposób odtworzenia materiału wysyłamy na adres podany podczas płatności.',
+                  title: '2. Otrzymujesz potwierdzenie',
+                  text: 'Potwierdzenie zamówienia i wszystkie informacje organizacyjne wysyłamy na adres podany podczas płatności.',
+                },
+                {
+                  Icon: Play,
+                  title: '3. Oglądasz pełny materiał',
+                  text: 'W dniu premiery otrzymujesz prywatny dostęp do dwóch części premium i możesz wracać do nich w dowolnym momencie.',
                 },
               ].map(({ Icon, title, text }) => (
                 <div key={title} className="border-t border-esti-gold pt-7">
@@ -353,12 +351,12 @@ export default function SochaPresalePage({ status }: { status?: PresaleStatus })
 
             <div className="mt-14 flex flex-col gap-5 bg-esti-beige/35 p-7 sm:flex-row sm:items-center sm:justify-between sm:p-9">
               <div className="flex items-start gap-4">
-                <HeartHandshake size={27} className="mt-1 shrink-0 text-esti-gold" />
+                <ShieldCheck size={27} className="mt-1 shrink-0 text-esti-gold" />
                 <div>
-                  <p className="font-serif text-2xl">Przedsprzedaż decyduje o premierze</p>
+                  <p className="font-serif text-2xl">Zamówienie bez ryzyka</p>
                   <p className="mt-2 max-w-2xl text-sm font-light leading-relaxed text-esti-taupe">
-                    Celem jest co najmniej {SOCHA_PRESALE.targetOrders} opłaconych zamówień. Jeżeli płatna premiera nie
-                    dojdzie do skutku, wpłacona kwota zostanie zwrócona.
+                    Jeśli materiał nie zostanie opublikowany, zwrócimy 100% wpłaconej kwoty tą samą metodą płatności.
+                    Bez dodatkowych formularzy i formalności.
                   </p>
                 </div>
               </div>
@@ -366,7 +364,7 @@ export default function SochaPresalePage({ status }: { status?: PresaleStatus })
                 href="#zamow"
                 className="shrink-0 bg-esti-dark px-7 py-4 text-center text-xs font-bold uppercase tracking-widest text-white transition-colors hover:bg-esti-gold hover:text-esti-dark"
               >
-                Dołączam
+                Kupuję dostęp za {SOCHA_PRESALE.priceGrossPln} zł
               </a>
             </div>
           </div>
@@ -397,7 +395,7 @@ export default function SochaPresalePage({ status }: { status?: PresaleStatus })
                 href="#zamow"
                 className="group inline-flex items-center justify-center gap-3 bg-esti-gold px-8 py-4 text-sm font-bold uppercase tracking-widest text-esti-dark transition-colors hover:bg-white"
               >
-                Zamawiam za {SOCHA_PRESALE.priceGrossPln} zł
+                Kupuję dostęp za {SOCHA_PRESALE.priceGrossPln} zł
                 <ArrowRight size={18} className="transition-transform group-hover:translate-x-1" />
               </a>
               <p className="mt-5 text-xs font-light leading-relaxed text-white/45">
@@ -410,4 +408,3 @@ export default function SochaPresalePage({ status }: { status?: PresaleStatus })
     </div>
   );
 }
-
