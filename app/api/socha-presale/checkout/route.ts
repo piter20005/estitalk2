@@ -112,7 +112,28 @@ export async function POST(request: NextRequest) {
     if (!stripeResponse.ok) {
       const errorBody = await stripeResponse.text();
       console.error(`SOCHA_PRESALE: Stripe returned ${stripeResponse.status}: ${errorBody}`);
-      return redirectToStatus(request, 'error');
+      const response = redirectToStatus(request, 'error');
+
+      if (process.env.CONTEXT === 'deploy-preview') {
+        try {
+          const stripeError = JSON.parse(errorBody) as {
+            error?: { code?: string; param?: string; type?: string };
+          };
+          const diagnostic = [
+            stripeError.error?.type,
+            stripeError.error?.code,
+            stripeError.error?.param,
+          ]
+            .filter(Boolean)
+            .join(':');
+
+          if (diagnostic) response.headers.set('x-estitalk-stripe-error', diagnostic);
+        } catch {
+          // The full response remains available only in server logs.
+        }
+      }
+
+      return response;
     }
 
     const session = (await stripeResponse.json()) as { url?: string | null };
