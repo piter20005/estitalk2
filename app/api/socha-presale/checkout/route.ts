@@ -3,17 +3,60 @@ import { SOCHA_PRESALE } from '@/lib/sochaPresale';
 
 const STRIPE_CHECKOUT_SESSIONS_URL = 'https://api.stripe.com/v1/checkout/sessions';
 
+function firstForwardedValue(value: string | null) {
+  return value?.split(',')[0]?.trim() || null;
+}
+
+function publicOrigin(request: NextRequest) {
+  const forwardedHost = firstForwardedValue(request.headers.get('x-forwarded-host'));
+  const host = forwardedHost || request.headers.get('host');
+  const forwardedProto = firstForwardedValue(request.headers.get('x-forwarded-proto'));
+  const protocol = forwardedProto || new URL(request.url).protocol.replace(':', '');
+
+  return host ? `${protocol}://${host}` : new URL(request.url).origin;
+}
+
+function verifiedRequestOrigin(request: NextRequest) {
+  const requestOrigin = request.headers.get('origin');
+  if (!requestOrigin) return null;
+
+  try {
+    const originUrl = new URL(requestOrigin);
+    const allowedHosts = [
+      request.headers.get('host'),
+      firstForwardedValue(request.headers.get('x-forwarded-host')),
+    ]
+      .filter((host): host is string => Boolean(host))
+      .map((host) => host.toLowerCase());
+
+    if (
+      !['http:', 'https:'].includes(originUrl.protocol) ||
+      !allowedHosts.includes(originUrl.host.toLowerCase())
+    ) {
+      return null;
+    }
+
+    return originUrl.origin;
+  } catch {
+    return null;
+  }
+}
+
 function redirectToStatus(request: NextRequest, status: string) {
-  return NextResponse.redirect(new URL(`${SOCHA_PRESALE.route}?status=${status}`, request.url), 303);
+  return NextResponse.redirect(new URL(`${SOCHA_PRESALE.route}?status=${status}`, publicOrigin(request)), 303);
 }
 
 export async function POST(request: NextRequest) {
   const requestOrigin = request.headers.get('origin');
-  const ownOrigin = new URL(request.url).origin;
+  const verifiedOrigin = verifiedRequestOrigin(request);
 
-  if (requestOrigin && requestOrigin !== ownOrigin) {
+  if (requestOrigin && !verifiedOrigin) {
     return new NextResponse('Niedozwolone żądanie.', { status: 403 });
   }
+
+  // Netlify can rewrite request.url to an internal host. For browser form posts,
+  // the verified Origin is therefore the most reliable public URL.
+  const ownOrigin = verifiedOrigin || publicOrigin(request);
 
   const formData = await request.formData();
   if (formData.get('terms') !== 'accepted') {
@@ -28,9 +71,9 @@ export async function POST(request: NextRequest) {
 
   const successUrl = new URL(
     `${SOCHA_PRESALE.route}?status=success&session_id={CHECKOUT_SESSION_ID}`,
-    request.url
+    ownOrigin
   ).toString();
-  const cancelUrl = new URL(`${SOCHA_PRESALE.route}?status=cancelled`, request.url).toString();
+  const cancelUrl = new URL(`${SOCHA_PRESALE.route}?status=cancelled`, ownOrigin).toString();
 
   const body = new URLSearchParams({
     mode: 'payment',
@@ -84,4 +127,3 @@ export async function POST(request: NextRequest) {
     return redirectToStatus(request, 'error');
   }
 }
-
