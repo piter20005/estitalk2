@@ -30,7 +30,7 @@ const FAQ = [
   {
     question: 'Co pozostanie dostępne bezpłatnie?',
     answer:
-      'Pierwsza, kompletna część rozmowy o objawach perimenopauzy i drodze do rozpoznania zostanie opublikowana bezpłatnie. Przedsprzedaż obejmuje dwie dalsze, zredagowane części.',
+      'Pierwsza, kompletna część rozmowy o objawach perimenopauzy i drodze do rozpoznania zostanie opublikowana bezpłatnie. Przedsprzedaż obejmuje dwa dalsze moduły: „Hormony i ciało” oraz „Seks, libido i relacje”.',
   },
   {
     question: 'Kiedy otrzymam dostęp?',
@@ -202,8 +202,8 @@ export default function SochaPresalePage({ status }: { status?: PresaleStatus })
                   <div className="my-7 border-y border-esti-beige py-6">
                     <ul className="space-y-3 text-sm">
                       {[
-                        'Dwie zredagowane części premium',
-                        'Hormony, ciało, libido i relacje',
+                        'Moduł 1: Hormony i ciało',
+                        'Moduł 2: Seks, libido i relacje',
                         'Materiał podzielony na wygodne rozdziały',
                         'Premiera dla kupujących bez reklam',
                       ].map((item) => (
@@ -257,37 +257,125 @@ export default function SochaPresalePage({ status }: { status?: PresaleStatus })
 
       <section id="co-otrzymasz" className="scroll-mt-24 bg-white py-24">
         <div className="container mx-auto px-6">
-          <div className="mx-auto mb-14 max-w-3xl text-center">
-            <p className="text-xs font-bold uppercase tracking-[0.22em] text-esti-gold">Jeden materiał, dwie warstwy</p>
-            <h2 className="mt-4 font-serif text-4xl md:text-5xl">Co będzie bezpłatne, a co otrzymasz po zakupie?</h2>
+          <div className="mx-auto mb-14 max-w-4xl text-center">
+            <p className="text-xs font-bold uppercase tracking-[0.22em] text-esti-gold">Jedna rozmowa, trzy części</p>
+            <h2 className="mt-4 font-serif text-4xl md:text-5xl">
+              Zaczynasz bezpłatnie. Potem sięgasz po wiedzę, która idzie głębiej.
+            </h2>
             <p className="mt-5 text-lg font-light leading-relaxed text-esti-taupe">
-              Nie zabieramy dotychczasowym słuchaczkom całego podcastu. Bezpłatna część będzie kompletna, a płatny
-              dostęp otworzy dwa kolejne, pogłębione rozdziały rozmowy.
+              Płatny dostęp to nie tylko dłuższa wersja podcastu. To dwa uporządkowane moduły, które pomagają nazwać
+              objawy, przygotować konkretne pytania do lekarza i swobodniej rozmawiać o zmianach w intymności.
             </p>
           </div>
 
-          <div className="mx-auto grid max-w-5xl gap-6 md:grid-cols-2">
-            <div className="border border-esti-beige bg-esti-light p-8 md:p-10">
-              <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-full bg-white text-esti-gold">
+          <div className="mx-auto max-w-6xl">
+            <div className="grid items-center gap-7 border border-esti-beige bg-esti-light p-7 md:grid-cols-[auto_1fr_auto] md:p-9">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white text-esti-gold">
                 <Play size={21} fill="currentColor" />
               </div>
-              <p className="text-xs font-bold uppercase tracking-[0.2em] text-esti-taupe">Bezpłatnie</p>
-              <h3 className="mt-3 font-serif text-3xl">Objawy i droga do rozpoznania</h3>
-              <p className="mt-4 font-light leading-relaxed text-esti-taupe">
-                Pełna pierwsza część o nieoczywistych sygnałach perimenopauzy, regularnej miesiączce, śnie, nastroju
-                i trudnościach w łączeniu objawów w całość.
-              </p>
-            </div>
-            <div className="border border-esti-dark bg-esti-dark p-8 text-white shadow-xl md:p-10">
-              <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-full bg-white/10 text-esti-gold">
-                <LockKeyhole size={21} />
+              <div>
+                <div className="flex flex-wrap items-center gap-3">
+                  <p className="text-xs font-bold uppercase tracking-[0.2em] text-esti-taupe">Część bezpłatna</p>
+                  <span className="bg-white px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-esti-gold">
+                    Pełny odcinek
+                  </span>
+                </div>
+                <h3 className="mt-3 font-serif text-3xl">Objawy i droga do rozpoznania</h3>
+                <p className="mt-3 max-w-3xl font-light leading-relaxed text-esti-taupe">
+                  Nieoczywiste sygnały perimenopauzy, regularna miesiączka, sen, nastrój i moment, w którym pozornie
+                  niezwiązane dolegliwości zaczynają układać się w jedną historię.
+                </p>
               </div>
-              <p className="text-xs font-bold uppercase tracking-[0.2em] text-esti-gold">Dostęp premium</p>
-              <h3 className="mt-3 font-serif text-3xl">Hormony, ciało, seks i relacje</h3>
-              <p className="mt-4 font-light leading-relaxed text-white/65">
-                Dwie dalsze części: HTM, testosteron, skóra i okolice intymne oraz libido, ból, bliskość i seksualność
-                w kolejnych etapach życia.
-              </p>
+              <span className="text-xs font-bold uppercase tracking-[0.2em] text-esti-taupe">Oglądasz bez opłat</span>
+            </div>
+
+            <div className="mt-6 border border-esti-dark bg-esti-dark p-7 text-white shadow-xl md:p-10">
+              <div className="mb-9 flex flex-col gap-4 border-b border-white/15 pb-8 sm:flex-row sm:items-end sm:justify-between">
+                <div>
+                  <div className="flex items-center gap-3">
+                    <LockKeyhole size={19} className="text-esti-gold" />
+                    <p className="text-xs font-bold uppercase tracking-[0.22em] text-esti-gold">Dostęp premium</p>
+                  </div>
+                  <h3 className="mt-3 font-serif text-3xl md:text-4xl">Dwa pogłębione moduły po zakupie</h3>
+                </div>
+                <p className="max-w-sm text-sm font-light leading-relaxed text-white/55">
+                  {SOCHA_PRESALE.premiumDuration} materiału podzielonego na wygodne rozdziały.
+                </p>
+              </div>
+
+              <div className="grid gap-px overflow-hidden bg-white/15 lg:grid-cols-2">
+                <article className="bg-esti-dark p-1 pr-0 lg:pr-px">
+                  <div className="h-full bg-white/[0.04] p-7 md:p-9">
+                    <div className="flex items-center justify-between gap-4">
+                      <span className="font-serif text-4xl italic text-esti-gold">01</span>
+                      <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/45">Hormony</span>
+                    </div>
+                    <h4 className="mt-5 font-serif text-3xl">Hormony i ciało</h4>
+                    <p className="mt-4 text-sm font-light leading-relaxed text-white/65">
+                      HTM bez prostego podziału „za albo przeciw”, testosteron u kobiet oraz wpływ zmian hormonalnych
+                      na skórę, śluzówki, okolice intymne i codzienne funkcjonowanie.
+                    </p>
+                    <ul className="mt-7 space-y-4 text-sm leading-relaxed text-white/80">
+                      {[
+                        'Uporządkujesz najważniejsze pytania o korzyści, ryzyko i moment rozpoczęcia HTM.',
+                        'Zrozumiesz, dlaczego sposób podania i indywidualny wywiad mają znaczenie.',
+                        'Dowiesz się, o jakie objawy i możliwości warto zapytać podczas wizyty lekarskiej.',
+                      ].map((benefit) => (
+                        <li key={benefit} className="flex items-start gap-3">
+                          <Check size={17} className="mt-0.5 shrink-0 text-esti-gold" />
+                          <span>{benefit}</span>
+                        </li>
+                      ))}
+                    </ul>
+                    <div className="mt-8 border-l-2 border-esti-gold pl-4 text-sm font-light italic leading-relaxed text-white/55">
+                      Po tej części łatwiej nazwiesz swoje objawy i przygotujesz konkretną listę pytań do lekarza.
+                    </div>
+                  </div>
+                </article>
+
+                <article className="bg-esti-dark p-1 pl-0 lg:pl-px">
+                  <div className="h-full bg-white/[0.04] p-7 md:p-9">
+                    <div className="flex items-center justify-between gap-4">
+                      <span className="font-serif text-4xl italic text-esti-gold">02</span>
+                      <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/45">Intymność</span>
+                    </div>
+                    <h4 className="mt-5 font-serif text-3xl">Seks, libido i relacje</h4>
+                    <p className="mt-4 text-sm font-light leading-relaxed text-white/65">
+                      Suchość, ból, zmiany pożądania i bliskość w długoletniej relacji — bez zawstydzania i bez
+                      sprowadzania seksualności wyłącznie do penetracji.
+                    </p>
+                    <ul className="mt-7 space-y-4 text-sm leading-relaxed text-white/80">
+                      {[
+                        'Rozpoznasz sygnały, których nie trzeba akceptować jako „normalnej ceny wieku”.',
+                        'Lepiej zrozumiesz, co może wpływać na libido i odczuwanie przyjemności.',
+                        'Zyskasz język do rozmowy z lekarzem i partnerem o bólu, potrzebach i bliskości.',
+                      ].map((benefit) => (
+                        <li key={benefit} className="flex items-start gap-3">
+                          <Check size={17} className="mt-0.5 shrink-0 text-esti-gold" />
+                          <span>{benefit}</span>
+                        </li>
+                      ))}
+                    </ul>
+                    <div className="mt-8 border-l-2 border-esti-gold pl-4 text-sm font-light italic leading-relaxed text-white/55">
+                      Po tej części łatwiej nazwiesz tematy, które chcesz skonsultować, oraz te, o których warto
+                      porozmawiać w relacji.
+                    </div>
+                  </div>
+                </article>
+              </div>
+
+              <div className="mt-8 flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+                <p className="max-w-2xl text-sm font-light leading-relaxed text-white/55">
+                  Materiał edukacyjny nie zastępuje konsultacji, ale pomaga wejść w nią z większą świadomością i
+                  lepiej wykorzystać czas rozmowy ze specjalistą.
+                </p>
+                <a
+                  href="#zamow"
+                  className="shrink-0 bg-esti-gold px-7 py-4 text-center text-xs font-bold uppercase tracking-widest text-esti-dark transition-colors hover:bg-white"
+                >
+                  Kupuję oba moduły
+                </a>
+              </div>
             </div>
           </div>
         </div>
