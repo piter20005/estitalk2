@@ -16,7 +16,7 @@ const NAV_LINKS = [
 ] as const;
 
 const DOCTORS_LINK = { name: 'For Doctors', href: '/for-doctors' } as const;
-const PREMIERE_LINK = { name: 'Premiera', href: '/premiera' } as const;
+const PREMIERE_LINK = { name: 'Klub EstiTalk', href: '/premiera' } as const;
 
 const LOGO_WHITE =
   'https://res.cloudinary.com/dgcg6hz1d/image/upload/q_auto/f_auto/v1776376537/EstiTalk_nowe_logo_bia%C5%82e_4x_fdg62c.png';
