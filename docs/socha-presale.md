@@ -1,34 +1,33 @@
-# Przedsprzedaż odcinka z prof. Maciejem Sochą
+# Klub EstiTalk i odcinek z prof. Maciejem Sochą
 
 Podstrona jest dostępna pod adresem `/premiera`.
 
-## Płatności
+## Model publikacji
 
-Formularz wysyła żądanie do `/api/socha-presale/checkout`. Endpoint tworzy jednorazową sesję Stripe Checkout za
-79 zł brutto i przekierowuje kupującą osobę do Stripe. Opłacone zamówienia można odnaleźć w Stripe po metadanych:
+- jeden pełny odcinek publiczny na YouTube, Spotify i Apple Podcasts;
+- bonus „Hormony i ciało” dla Patronów;
+- bonus „Seks, libido i relacje” dla Patronów;
+- oba bonusy oraz materiały dodatkowe są dostępne od razu po dołączeniu do odpowiedniego progu.
 
-- `product_id=socha-menopauza-presale`
-- `presale=true`
+Podstrona nie realizuje płatności. Członkostwo i dostęp do materiałów są obsługiwane przez Patronite.
 
-W Netlify musi pozostać ustawiona zmienna `STRIPE_SECRET_KEY`, używana już przez integrację For Doctors. Dla tego
-endpointu nie jest potrzebny osobny Payment Link ani Price ID — produkt i cena są tworzone w sesji Checkout.
+## Uruchomienie profilu Patronite
 
-## Zmiana ceny lub celu
+Po utworzeniu profilu należy wpisać jego pełny adres w `lib/sochaPatronite.ts` w polu `patroniteUrl`.
+Do tego czasu przyciski prowadzą do sekcji informującej, że profil jest przygotowywany.
 
-Cena, identyfikator produktu i cel przedsprzedaży znajdują się w `lib/sochaPresale.ts`. Kwota `unitAmount` jest
-podana w groszach i musi odpowiadać `priceGrossPln` widocznemu na stronie.
+## Planowane progi
 
-## Po płatności
+- 15 zł — Wspieram EstiTalk;
+- 39 zł — Klub EstiTalk, dostęp do dwóch bonusów i biblioteki materiałów;
+- 79 zł — Mecenas EstiTalk, te same materiały oraz imię lub nazwa w podziękowaniach.
 
-Stripe wraca na `/premiera?status=success&session_id={CHECKOUT_SESSION_ID}`. Ten ekran potwierdza złożenie
-zamówienia, ale nie odblokowuje jeszcze filmu. Dostarczenie materiału po premierze trzeba obsłużyć osobno, np. przez
-dedykowaną stronę dostępu lub wysyłkę linku do osób wyszukanych w Stripe po powyższych metadanych.
+Wyższy próg nie powinien tworzyć kolejnego obowiązku produkcyjnego.
 
-## Przed uruchomieniem kampanii
+## Przed rozpoczęciem kampanii
 
-1. Potwierdź publiczny termin premiery i ewentualnie dodaj go do tekstu strony.
-2. Potwierdź zasady zwrotu, jeśli nie zostanie osiągnięty cel 70 zamówień.
-3. Wykonaj płatność testową na kluczu testowym Stripe.
-4. Sprawdź dokument sprzedaży i ustawienia metod płatności na koncie Stripe.
-5. Podmień `/images/studio.png` na kadr z rozmowy, gdy gotowy materiał będzie dostępny.
-
+1. Utworzyć profil Patronite i uzupełnić `patroniteUrl`.
+2. Utworzyć trzy progi z opisami zgodnymi ze stroną.
+3. Dodać oba bonusy w wersji wideo i audio oraz PDF „Mapa objawów i pytań do lekarza”.
+4. Potwierdzić merytorycznie z prof. Maciejem Sochą fragmenty dotyczące HTM i testosteronu.
+5. Podmienić `/images/studio.png` na kadr z rozmowy, gdy będzie gotowy.
