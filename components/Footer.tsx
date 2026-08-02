@@ -31,7 +31,7 @@ export default function Footer() {
                 <li><Link href="/odcinki" className="hover:text-white transition-colors">Odcinki</Link></li>
                 <li><Link href="/goscie" className="hover:text-white transition-colors">Goście</Link></li>
                 <li><Link href="/tematy" className="hover:text-white transition-colors">Tematy</Link></li>
-                <li><Link href="/premiera" className="text-esti-beige hover:text-white transition-colors">Premiera</Link></li>
+                <li><Link href="/premiera" className="text-esti-beige hover:text-white transition-colors">Klub EstiTalk</Link></li>
                 <li><Link href="/#listen" className="hover:text-white transition-colors">Gdzie słuchać</Link></li>
               </ul>
             </div>
