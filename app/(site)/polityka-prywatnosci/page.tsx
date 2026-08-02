@@ -69,9 +69,9 @@ export default function PrivacyPolicyPage() {
                 w trybie zanonimizowanym (na podstawie Twojej zgody wyrażonej w bannerze cookies).
               </li>
               <li>
-                <strong className="text-esti-dark">Sprzedaż i przedsprzedaż dostępu do treści premium</strong>{' '}
-                (w tym sekcja „For Doctors" i premiery specjalne) — realizacja umowy zakupu
-                (art. 6 ust. 1 lit. b RODO). Płatność obsługuje Stripe.
+                <strong className="text-esti-dark">Sprzedaż dostępu do treści premium</strong>{' '}
+                (sekcja „For Doctors") — realizacja umowy zakupu (art. 6 ust. 1 lit. b RODO).
+                Płatność obsługuje Stripe.
               </li>
               <li>
                 <strong className="text-esti-dark">Korespondencja</strong> — odpowiedzi na zapytania
