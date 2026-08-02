@@ -106,7 +106,7 @@ function PatroniteLink({
 
   return (
     <a
-      href={SOCHA_PATRONITE.patroniteUrl ?? '#start-patronite'}
+      href={SOCHA_PATRONITE.patroniteUrl ?? '#progi'}
       className={className}
       {...(ready ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
     >
