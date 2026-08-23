@@ -16,6 +16,7 @@ const NAV_LINKS = [
 ] as const;
 
 const DOCTORS_LINK = { name: 'For Doctors', href: '/for-doctors' } as const;
+const PREMIERE_LINK = { name: 'Klub EstiTalk', href: '/premiera' } as const;
 
 const LOGO_WHITE =
   'https://res.cloudinary.com/dgcg6hz1d/image/upload/q_auto/f_auto/v1776376537/EstiTalk_nowe_logo_bia%C5%82e_4x_fdg62c.png';
@@ -30,7 +31,8 @@ export default function Header() {
 
   const isHome = pathname === '/';
   const isEpisode = /^\/odcinki\/.+/.test(pathname ?? '');
-  const hasHeroVideo = isHome || isEpisode;
+  const isPremiere = pathname === PREMIERE_LINK.href;
+  const hasHeroVideo = isHome || isEpisode || isPremiere;
   const overHero = hasHeroVideo && !isScrolled && !mobileMenuOpen;
 
   useEffect(() => {
@@ -76,7 +78,7 @@ export default function Header() {
         </Link>
 
         <nav
-          className={`hidden md:flex items-center gap-12 transition-colors duration-300 ${
+          className={`hidden md:flex items-center gap-7 xl:gap-12 transition-colors duration-300 ${
             overHero ? 'text-white' : 'text-esti-dark'
           }`}
         >
@@ -96,6 +98,15 @@ export default function Header() {
               />
             </Link>
           ))}
+          <Link
+            href={PREMIERE_LINK.href}
+            className={`text-xs uppercase tracking-widest font-bold transition-colors relative group ${
+              overHero ? 'text-esti-beige hover:text-white' : 'text-esti-gold hover:text-esti-dark'
+            }`}
+          >
+            {PREMIERE_LINK.name}
+            <span className="absolute -bottom-1 left-0 h-[1px] w-full bg-current" />
+          </Link>
           <Link
             href={DOCTORS_LINK.href}
             className={`px-5 py-2 rounded-full text-xs uppercase tracking-widest font-bold transition-all duration-300 shadow-sm ${
@@ -156,6 +167,13 @@ export default function Header() {
                   {link.name}
                 </Link>
               ))}
+              <Link
+                href={PREMIERE_LINK.href}
+                className="text-3xl font-serif italic text-esti-gold"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                {PREMIERE_LINK.name}
+              </Link>
               <Link
                 href={DOCTORS_LINK.href}
                 className="mt-2 px-6 py-3 rounded-full bg-esti-dark text-white text-sm uppercase tracking-widest font-bold"
