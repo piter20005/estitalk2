@@ -4,7 +4,6 @@ import {
   Check,
   Clock3,
   Crown,
-  FileText,
   Headphones,
   HeartHandshake,
   LockKeyhole,
@@ -42,18 +41,18 @@ const INTIMACY_TOPICS = [
 const BENEFITS = [
   {
     Icon: Play,
-    title: 'Dwa bonusy wideo',
-    text: 'Dwie osobne, uporządkowane rozmowy dostępne od razu — nie przypadkowe resztki z montażu.',
+    title: '1 godz. 47 min rozmowy',
+    text: 'Dalsza część spotkania z prof. Maciejem Sochą dostępna w materiale wideo dla Klubu EstiTalk.',
   },
   {
-    Icon: Headphones,
-    title: 'Wersje audio',
-    text: 'Słuchasz wygodnie również bez ekranu i wracasz do wybranych rozdziałów wtedy, kiedy chcesz.',
+    Icon: Sparkles,
+    title: 'Dwa pogłębione wątki',
+    text: 'Hormony i ciało oraz seks, libido i relacje — omówione w pełnym kontekście rozmowy.',
   },
   {
-    Icon: FileText,
-    title: 'Praktyczny materiał PDF',
-    text: 'Mapa objawów i pytań, które pomagają lepiej przygotować się do rozmowy z lekarzem.',
+    Icon: Clock3,
+    title: 'Dostęp od razu',
+    text: 'Po dołączeniu do odpowiedniego progu Patronite możesz od razu obejrzeć dalszą część odcinka.',
   },
   {
     Icon: Vote,
@@ -64,19 +63,19 @@ const BENEFITS = [
 
 const FAQ = [
   {
-    question: 'Czy pełny odcinek z prof. Maciejem Sochą będzie bezpłatny?',
+    question: 'Co obejrzę bezpłatnie?',
     answer:
-      'Tak. Pełny, zamknięty odcinek o rozpoznawaniu perimenopauzy i pierwszych krokach zostanie opublikowany bezpłatnie na YouTube, Spotify i Apple Podcasts.',
+      'Pierwsza część rozmowy trwa 1 godz. 25 min i jest dostępna bezpłatnie na YouTube, Spotify i Apple Podcasts. To obszerna rozmowa o menopauzie, perimenopauzie i pierwszych sygnałach zmian hormonalnych.',
   },
   {
-    question: 'Czy odcinek na YouTube urwie się w połowie?',
+    question: 'Co otrzymam po dołączeniu do Klubu EstiTalk?',
     answer:
-      'Nie. Publiczny materiał ma własny początek, rozwinięcie i zakończenie. Patronite nie odblokowuje końcówki odcinka, lecz dwa osobne pogłębienia tematów, których nie dałoby się dobrze omówić w jednym materiale.',
+      'Od razu odblokujesz dalsze 1 godz. 47 min rozmowy z prof. Maciejem Sochą. Materiał rozwija dwa mocne wątki: „Hormony i ciało” oraz „Seks, libido i relacje”.',
   },
   {
-    question: 'Co otrzymam od razu po dołączeniu do Klubu EstiTalk?',
+    question: 'Czy materiał patronacki jest dostępny od razu?',
     answer:
-      'Na progu Klub EstiTalk od razu otrzymasz dwa bonusy — „Hormony i ciało” oraz „Seks, libido i relacje” — w wersji wideo i audio, a także rozdziały oraz materiał PDF.',
+      'Tak. Po aktywowaniu progu Klub EstiTalk otrzymasz dostęp do opublikowanej dalszej części odcinka zgodnie z zasadami Patronite.',
   },
   {
     question: 'Czy Patronite jest płatnością jednorazową?',
@@ -140,14 +139,14 @@ export default function SochaPresalePage() {
                 EstiTalk × Patronite
               </span>
               <h1 className="font-serif text-5xl leading-[0.98] sm:text-6xl lg:text-7xl">
-                Pełna rozmowa
+                Ponad trzy godziny
                 <br />
-                <span className="italic text-esti-beige">zostaje otwarta.</span>
+                <span className="italic text-esti-beige">ważnej rozmowy.</span>
               </h1>
               <p className="mt-7 max-w-2xl text-lg font-light leading-relaxed text-white/80 sm:text-xl">
-                Odcinek EstiTalk z prof. Maciejem Sochą publikujemy w pełnej, zamkniętej formie bezpłatnie. Dla
-                społeczności Patronite przygotowujemy od razu dwa osobne pogłębienia: o hormonach i ciele oraz o
-                seksie, libido i relacjach.
+                Prof. Maciej Socha i dr Tatiana Jasińska rozmawiają o menopauzie, hormonach, seksualności i relacjach
+                bez uproszczeń i bez tematów tabu. Pierwszą część oglądasz bezpłatnie, a dalszą część odblokujesz w
+                Klubie EstiTalk na Patronite.
               </p>
 
               <div className="mt-9 flex flex-wrap gap-3 text-sm text-white/75">
@@ -155,7 +154,7 @@ export default function SochaPresalePage() {
                   {SOCHA_PATRONITE.publicEpisodeDuration} bezpłatnie
                 </span>
                 <span className="border border-white/20 bg-black/20 px-4 py-2 backdrop-blur-sm">
-                  2 bonusy dla Patronów
+                  {SOCHA_PATRONITE.premiumDuration} dla Patronów
                 </span>
                 <span className="border border-white/20 bg-black/20 px-4 py-2 backdrop-blur-sm">
                   dostępne od razu
@@ -167,7 +166,7 @@ export default function SochaPresalePage() {
                   href="#co-otrzymasz"
                   className="group inline-flex items-center justify-center gap-3 bg-esti-gold px-8 py-4 text-sm font-bold uppercase tracking-widest text-esti-dark transition-colors hover:bg-white"
                 >
-                  Zobacz cały pakiet
+                  Zobacz, co otrzymasz
                   <ArrowRight size={18} className="transition-transform group-hover:translate-x-1" />
                 </a>
                 <a
@@ -175,7 +174,7 @@ export default function SochaPresalePage() {
                   className="inline-flex items-center gap-2 py-4 text-sm uppercase tracking-widest text-white/75 transition-colors hover:text-white"
                 >
                   <Play size={15} fill="currentColor" />
-                  Jak dzielimy rozmowę
+                  Zobacz zakres rozmowy
                 </a>
               </div>
             </div>
@@ -183,17 +182,16 @@ export default function SochaPresalePage() {
             <aside className="border border-white/15 bg-black/55 p-7 shadow-2xl backdrop-blur-md sm:p-9">
               <div className="flex items-center justify-between gap-4">
                 <div>
-                  <p className="text-xs font-bold uppercase tracking-[0.22em] text-esti-gold">Pakiet premierowy</p>
-                  <h2 className="mt-3 font-serif text-3xl">Jedna rozmowa. Trzy materiały.</h2>
+                  <p className="text-xs font-bold uppercase tracking-[0.22em] text-esti-gold">Rozmowa premierowa</p>
+                  <h2 className="mt-3 font-serif text-3xl">Jedna rozmowa. Dwie części.</h2>
                 </div>
                 <HeartHandshake size={32} className="shrink-0 text-esti-gold" />
               </div>
 
               <div className="mt-7 space-y-4 border-y border-white/15 py-7">
                 {[
-                  ['Pełny odcinek publiczny', SOCHA_PATRONITE.publicEpisodeDuration],
-                  ['Bonus: Hormony i ciało', SOCHA_PATRONITE.hormoneBonusDuration],
-                  ['Bonus: Seks, libido i relacje', SOCHA_PATRONITE.intimacyBonusDuration],
+                  ['Część bezpłatna', SOCHA_PATRONITE.publicEpisodeDuration],
+                  ['Dalsza część dla Patronów', SOCHA_PATRONITE.premiumDuration],
                 ].map(([title, duration], index) => (
                   <div key={title} className="flex items-start gap-4">
                     <span className="font-serif text-xl italic text-esti-gold">0{index + 1}</span>
@@ -211,8 +209,8 @@ export default function SochaPresalePage() {
               </div>
 
               <p className="mt-6 text-sm font-light leading-relaxed text-white/60">
-                Patronite nie zamyka podcastu. Finansuje jego regularność i pozwala przygotowywać warstwę
-                rozszerzoną dla najbardziej zaangażowanej społeczności.
+                Wsparcie Patronów pomaga nam zapraszać wybitnych ekspertów i regularnie tworzyć jakościowe,
+                rzetelnie przygotowane treści edukacyjne.
               </p>
             </aside>
           </div>
@@ -223,14 +221,14 @@ export default function SochaPresalePage() {
         <div className="container mx-auto px-6">
           <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[0.82fr_1.18fr] lg:items-center">
             <div>
-              <p className="text-xs font-bold uppercase tracking-[0.22em] text-esti-gold">Najważniejsza zasada</p>
-              <h2 className="mt-4 font-serif text-4xl leading-tight md:text-5xl">Nie zabieramy EstiTalk z YouTube.</h2>
+              <p className="text-xs font-bold uppercase tracking-[0.22em] text-esti-gold">Dlaczego Patronite</p>
+              <h2 className="mt-4 font-serif text-4xl leading-tight md:text-5xl">Rozmowy, na które warto dać sobie czas.</h2>
             </div>
             <div className="border-l border-esti-gold pl-7 md:pl-10">
               <p className="text-xl font-light leading-relaxed text-esti-taupe">
-                Nie publikujemy pół odcinka i nie każemy płacić za jego zakończenie. Bezpłatny materiał odpowiada na
-                konkretny problem i kończy się praktycznym podsumowaniem. Patroni otrzymują większą głębię — nie
-                brakujący finał.
+                Do EstiTalk zapraszamy znamienitych lekarzy i ekspertów, którzy dzielą się wiedzą potrzebną w realnym
+                życiu. Produkcja takich rozmów jest dla nas dużym wyzwaniem czasowym i finansowym. Wsparcie Patronów
+                pozwala nam utrzymać wysoki poziom realizacji i przygotowywać kolejne rzetelne materiały edukacyjne.
               </p>
             </div>
           </div>
@@ -240,11 +238,11 @@ export default function SochaPresalePage() {
       <section id="jak-dzielimy" className="scroll-mt-24 bg-esti-light py-24">
         <div className="container mx-auto px-6">
           <div className="mx-auto mb-14 max-w-4xl text-center">
-            <p className="text-xs font-bold uppercase tracking-[0.22em] text-esti-gold">Pełny odcinek + dwa bonusy</p>
-            <h2 className="mt-4 font-serif text-4xl md:text-5xl">Każdy materiał ma własną obietnicę.</h2>
+            <p className="text-xs font-bold uppercase tracking-[0.22em] text-esti-gold">Część bezpłatna + kontynuacja</p>
+            <h2 className="mt-4 font-serif text-4xl md:text-5xl">Jedna rozmowa, jeszcze więcej konkretów.</h2>
             <p className="mt-5 text-lg font-light leading-relaxed text-esti-taupe">
-              Dzięki temu publiczna rozmowa jest satysfakcjonująca sama w sobie, a materiały patronackie dają
-              konkretny powód, żeby wejść głębiej.
+              Zacznij od obszernej części publicznej. Jeśli chcesz usłyszeć dalszy ciąg i wejść głębiej w najbardziej
+              osobiste i praktyczne wątki, kontynuacja czeka w Klubie EstiTalk.
             </p>
           </div>
 
@@ -253,7 +251,7 @@ export default function SochaPresalePage() {
               <div>
                 <div className="flex items-center gap-3">
                   <Youtube size={22} className="text-esti-gold" />
-                  <p className="text-xs font-bold uppercase tracking-[0.2em] text-esti-taupe">Pełny odcinek publiczny</p>
+                  <p className="text-xs font-bold uppercase tracking-[0.2em] text-esti-taupe">Część bezpłatna</p>
                 </div>
                 <p className="mt-5 font-serif text-5xl italic text-esti-gold">{SOCHA_PATRONITE.publicEpisodeDuration}</p>
                 <span className="mt-4 inline-block bg-esti-light px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-esti-dark">
@@ -281,12 +279,10 @@ export default function SochaPresalePage() {
               <article className="bg-esti-dark p-7 text-white shadow-xl md:p-10">
                 <div className="flex items-start justify-between gap-5">
                   <div>
-                    <p className="text-xs font-bold uppercase tracking-[0.22em] text-esti-gold">Bonus patronacki 01</p>
+                    <p className="text-xs font-bold uppercase tracking-[0.22em] text-esti-gold">Wątek kontynuacji 01</p>
                     <h3 className="mt-3 font-serif text-3xl">Hormony i ciało</h3>
                   </div>
-                  <span className="border border-white/15 px-3 py-2 text-xs text-white/55">
-                    {SOCHA_PATRONITE.hormoneBonusDuration}
-                  </span>
+                  <LockKeyhole size={20} className="text-esti-gold" />
                 </div>
                 <p className="mt-5 text-sm font-light leading-relaxed text-white/65">
                   Pogłębiona rozmowa o tym, jak gospodarka hormonalna wpływa na ciało i jakie pytania warto zadać
@@ -308,12 +304,10 @@ export default function SochaPresalePage() {
               <article className="bg-esti-dark p-7 text-white shadow-xl md:p-10">
                 <div className="flex items-start justify-between gap-5">
                   <div>
-                    <p className="text-xs font-bold uppercase tracking-[0.22em] text-esti-gold">Bonus patronacki 02</p>
+                    <p className="text-xs font-bold uppercase tracking-[0.22em] text-esti-gold">Wątek kontynuacji 02</p>
                     <h3 className="mt-3 font-serif text-3xl">Seks, libido i relacje</h3>
                   </div>
-                  <span className="border border-white/15 px-3 py-2 text-xs text-white/55">
-                    {SOCHA_PATRONITE.intimacyBonusDuration}
-                  </span>
+                  <LockKeyhole size={20} className="text-esti-gold" />
                 </div>
                 <p className="mt-5 text-sm font-light leading-relaxed text-white/65">
                   Konkretna i pozbawiona zawstydzania rozmowa o zmianach pożądania, bólu, przyjemności i bliskości.
@@ -343,8 +337,9 @@ export default function SochaPresalePage() {
                 <p className="text-xs font-bold uppercase tracking-[0.22em] text-esti-gold">Od razu po dołączeniu</p>
                 <h2 className="mt-4 font-serif text-4xl md:text-5xl">Nie czekasz na kolejny miesiąc.</h2>
                 <p className="mt-6 font-light leading-relaxed text-esti-taupe">
-                  W dniu premiery w Klubie EstiTalk czeka cały pakiet z rozmowy z prof. Maciejem Sochą. Członkostwo
-                  daje także dostęp do kolejnych materiałów dodawanych do biblioteki.
+                  W Klubie EstiTalk czeka dalsza część rozmowy z prof. Maciejem Sochą — 1 godz. 47 min wiedzy,
+                  konkretów i pytań, których zwykle nie zadaje się publicznie. Członkostwo daje również dostęp do
+                  kolejnych materiałów dodawanych do biblioteki.
                 </p>
               </div>
 
@@ -380,7 +375,7 @@ export default function SochaPresalePage() {
                 {
                   Icon: LockKeyhole,
                   title: '2. Odblokowujesz bibliotekę',
-                  text: 'Na progu Klub EstiTalk od razu zyskujesz oba bonusy, audio, rozdziały i materiał PDF.',
+                  text: 'Na progu Klub EstiTalk od razu zyskujesz dalsze 1 godz. 47 min rozmowy z prof. Maciejem Sochą.',
                 },
                 {
                   Icon: Clock3,
@@ -445,8 +440,8 @@ export default function SochaPresalePage() {
               <ul className="mt-7 space-y-3 text-sm text-white/85">
                 {[
                   'Wszystko z niższego progu',
-                  'Oba bonusy z prof. Maciejem Sochą od razu',
-                  'Wideo, audio, rozdziały i materiał PDF',
+                  'Dalsze 1 godz. 47 min rozmowy z prof. Maciejem Sochą',
+                  'Dwa pogłębione wątki w jednym materiale wideo',
                   'Dostęp do kolejnych materiałów klubowych',
                 ].map((item) => (
                   <li key={item} className="flex items-start gap-3">
