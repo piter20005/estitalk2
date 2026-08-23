@@ -1,10 +1,8 @@
 export const SOCHA_PATRONITE = {
   route: '/premiera',
-  patroniteUrl: null as string | null,
-  publicEpisodeDuration: '70–80 minut',
-  hormoneBonusDuration: '55–65 minut',
-  intimacyBonusDuration: '25–35 minut',
-  premiumDuration: 'około 90 minut',
+  patroniteUrl: 'https://patronite.pl/estitalk',
+  publicEpisodeDuration: '1 godz. 25 min',
+  premiumDuration: '1 godz. 47 min',
   tiers: {
     supporter: 15,
     club: 39,
