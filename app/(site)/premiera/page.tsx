@@ -3,16 +3,16 @@ import SochaPresalePage from '@/components/SochaPresalePage';
 import { SOCHA_PATRONITE } from '@/lib/sochaPatronite';
 
 export const metadata: Metadata = {
-  title: 'Klub EstiTalk — pełny podcast i materiały dla Patronów',
+  title: 'EstiTalk z prof. Maciejem Sochą — dalsza część dla Patronów',
   description:
-    'Pełny odcinek EstiTalk z prof. Maciejem Sochą pozostaje bezpłatny. Patroni otrzymują od razu dwa pogłębione materiały o hormonach, ciele, seksie, libido i relacjach.',
+    'Ponad trzy godziny rozmowy o menopauzie, hormonach, seksualności i relacjach. Obejrzyj pierwszą część bezpłatnie, a dalszą część odblokuj w Klubie EstiTalk na Patronite.',
   alternates: {
     canonical: SOCHA_PATRONITE.route,
   },
   openGraph: {
-    title: 'Pełny EstiTalk bezpłatnie. Dodatkowa wiedza dla Patronów.',
+    title: 'Ponad trzy godziny rozmowy z prof. Maciejem Sochą',
     description:
-      'Jedna rozmowa z prof. Maciejem Sochą, jeden pełny odcinek publiczny i dwa osobne bonusy dla społeczności EstiTalk.',
+      'Pierwsza część bezpłatnie. Dalsze 1 godz. 47 min rozmowy o hormonach, ciele, seksie, libido i relacjach dla Patronów EstiTalk.',
     url: SOCHA_PATRONITE.route,
     type: 'website',
     images: [
@@ -26,8 +26,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Klub EstiTalk — rozmowa z prof. Maciejem Sochą',
-    description: 'Pełny odcinek na YouTube oraz dwa pogłębione materiały dla Patronów.',
+    title: 'EstiTalk z prof. Maciejem Sochą — dalsza część dla Patronów',
+    description: 'Pierwsza część na YouTube, a dalsze 1 godz. 47 min rozmowy w Klubie EstiTalk.',
     images: ['/images/studio.png'],
   },
 };
