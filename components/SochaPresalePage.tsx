@@ -163,10 +163,10 @@ export default function SochaPresalePage() {
 
               <div className="mt-10 flex flex-col items-start gap-4 sm:flex-row sm:items-center">
                 <a
-                  href="#co-otrzymasz"
+                  href="#zwiastun"
                   className="group inline-flex items-center justify-center gap-3 bg-esti-gold px-8 py-4 text-sm font-bold uppercase tracking-widest text-esti-dark transition-colors hover:bg-white"
                 >
-                  Zobacz, co otrzymasz
+                  Obejrzyj zwiastun
                   <ArrowRight size={18} className="transition-transform group-hover:translate-x-1" />
                 </a>
                 <a
@@ -213,6 +213,56 @@ export default function SochaPresalePage() {
                 rzetelnie przygotowane treści edukacyjne.
               </p>
             </aside>
+          </div>
+        </div>
+      </section>
+
+      <section id="zwiastun" className="scroll-mt-24 bg-esti-light py-24">
+        <div className="container mx-auto px-6">
+          <div className="mx-auto max-w-6xl">
+            <div className="mx-auto mb-10 max-w-3xl text-center">
+              <p className="text-xs font-bold uppercase tracking-[0.22em] text-esti-gold">Zobacz zwiastun</p>
+              <h2 className="mt-4 font-serif text-4xl leading-tight md:text-5xl">
+                Menopauza, hormony i seksualność bez tematów tabu.
+              </h2>
+              <p className="mt-5 text-lg font-light leading-relaxed text-esti-taupe">
+                Zobacz fragment ponad trzygodzinnej rozmowy dr Tatiany Jasińskiej z prof. Maciejem Sochą.
+              </p>
+            </div>
+
+            <div className="overflow-hidden border border-esti-beige bg-black shadow-2xl">
+              <video
+                controls
+                playsInline
+                preload="metadata"
+                poster="https://res.cloudinary.com/dgcg6hz1d/video/upload/so_2,f_jpg,q_auto/v1787473913/EstiTalk_promo_Socha_poziomo_1080p_zo8pxv.jpg"
+                className="aspect-video w-full bg-black object-cover"
+                aria-label="Zwiastun rozmowy EstiTalk z prof. Maciejem Sochą"
+              >
+                <source
+                  src="https://res.cloudinary.com/dgcg6hz1d/video/upload/f_mp4,q_auto/v1787473913/EstiTalk_promo_Socha_poziomo_1080p_zo8pxv.mp4"
+                  type="video/mp4"
+                />
+                <source
+                  src="https://res.cloudinary.com/dgcg6hz1d/video/upload/v1787473913/EstiTalk_promo_Socha_poziomo_1080p_zo8pxv.mov"
+                  type="video/quicktime"
+                />
+                Twoja przeglądarka nie obsługuje odtwarzania wideo.
+              </video>
+            </div>
+
+            <div className="mt-8 flex flex-col items-center justify-between gap-5 border-l-2 border-esti-gold bg-white px-6 py-6 text-center sm:flex-row sm:text-left md:px-8">
+              <div>
+                <p className="font-serif text-2xl">Chcesz usłyszeć dalszy ciąg?</p>
+                <p className="mt-2 text-sm font-light text-esti-taupe">
+                  Dołącz do Klubu EstiTalk i odblokuj kolejne 1 godz. 47 min rozmowy.
+                </p>
+              </div>
+              <PatroniteLink className="group inline-flex shrink-0 items-center justify-center gap-3 bg-esti-dark px-7 py-4 text-xs font-bold uppercase tracking-widest text-white transition-colors hover:bg-esti-gold hover:text-esti-dark">
+                Zobacz Patronite
+                <ArrowRight size={17} className="transition-transform group-hover:translate-x-1" />
+              </PatroniteLink>
+            </div>
           </div>
         </div>
       </section>
