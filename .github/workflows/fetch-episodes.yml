@@ -1,6 +1,12 @@
 name: Sync RSS to Sanity
 
 on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/fetch-episodes.yml'
+      - 'scripts/sync-rss-to-sanity.js'
   schedule:
     - cron: '17 * * * *'   # co godzinę, o 17. minucie
   workflow_dispatch:        # ręczny start
