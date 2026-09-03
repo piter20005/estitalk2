@@ -2,8 +2,8 @@ name: Sync RSS to Sanity
 
 on:
   schedule:
-    - cron: '*/15 * * * *'   # co 15 minut
-  workflow_dispatch:          # ręczny start
+    - cron: '17 * * * *'   # co godzinę, o 17. minucie
+  workflow_dispatch:        # ręczny start
 
 permissions:
   contents: read
