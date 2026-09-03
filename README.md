@@ -8,7 +8,7 @@ Next.js 15 App Router front-end for the EstiTalk podcast, content managed in San
 - **Sanity.io** — schemas for episodes, guests, topics; embedded Studio at `/studio`
 - **Tailwind CSS** with the custom `esti-*` palette
 - **Netlify** (official `@netlify/plugin-nextjs`)
-- **GitHub Actions** — runs `scripts/sync-rss-to-sanity.js` every 15 min to mirror the Anchor RSS feed into Sanity
+- **GitHub Actions** — runs `scripts/sync-rss-to-sanity.js` hourly and whenever the sync workflow or script changes, mirroring the Anchor RSS feed into Sanity
 
 ## Local development
 
@@ -54,13 +54,15 @@ Copy from `.env.local.example`. Variables:
 
 ## Content sync
 
-`scripts/sync-rss-to-sanity.js` runs in GitHub Actions every 15 minutes:
+`scripts/sync-rss-to-sanity.js` runs in GitHub Actions once per hour and whenever its workflow or script changes:
 
 - Upserts `episode` documents keyed by `episode-${md5(guid)}`
 - **Overwrites** title, description, publishDate, duration, platform URLs, season, episode number
 - **Never touches** editorial fields: `guests`, `topics`, `resources`, `notes`, `isFeatured`, `coverImage`, `slug`
 
 Editors add guests/topics/notes in `/studio`; the sync leaves their work alone.
+
+> GitHub may automatically disable scheduled workflows in public repositories after 60 days without repository activity. If the episode list stops refreshing, re-enable **Sync RSS to Sanity** in the Actions tab.
 
 ## Manual seed
 
